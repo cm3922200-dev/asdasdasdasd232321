@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCSearch — Minecraft Profile Search</title>
+  <link rel="icon" href="/creeper-logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#070908;--bg-subtle:#0c0f0d;--surface:#111412;--surface-2:#161a17;--surface-3:#1c211d;
+      --border:rgba(255,255,255,.06);--border-hover:rgba(255,255,255,.11);
+      --accent:#34d058;--accent-bright:#4ade80;--accent-dark:#22863a;
+      --accent-soft:rgba(52,208,88,.1);--accent-ring:rgba(52,208,88,.22);
+      --text:#f3f6f4;--text-2:#a3b0a8;--text-3:#6d796f;
+      --danger:#f87171;--warn:#fbbf24;
+      --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--radius-full:999px;
+      --nav-h:64px;--max:1180px;--viewer-bg:#121614;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.35);--shadow-md:0 12px 40px rgba(0,0,0,.45);
+      --ease:cubic-bezier(.4,0,.2,1);--t:.2s var(--ease);
+      --discord:#5865f2;--radius:var(--radius-md);
+      --card:var(--surface);--card2:var(--surface-2);--bg2:var(--bg-subtle);
+      --muted:var(--text-2);--accent-hover:var(--accent-bright);
+      --accent-dim:var(--accent-soft);--accent-border:var(--accent-ring);--accent-glow:transparent;
+    }
+    html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;font-size:15px}
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit;cursor:pointer}
+    .wrap{max-width:var(--max);margin:0 auto;padding:0 1.5rem}
+    ::selection{background:var(--accent-soft);color:var(--text)}
+
+    /* HEADER */
+    .header{position:sticky;top:0;z-index:200;background:rgba(7,9,8,.78);backdrop-filter:blur(20px) saturate(1.2);border-bottom:1px solid var(--border)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);gap:1.25rem}
+    .logo{display:flex;align-items:center;gap:.625rem;font-weight:700;font-size:1.05rem;cursor:pointer;color:var(--text);letter-spacing:-.025em}
+    .logo-icon{width:32px;height:32px;flex-shrink:0}
+    .logo-icon img{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+    .logo-name{font-weight:700;white-space:nowrap}
+    .brand-accent{color:var(--accent-bright)}
+    .nav{display:flex;align-items:center;gap:.2rem;padding:.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-full)}
+    .nav a,.nav button{padding:.45rem .9rem;border-radius:var(--radius-full);font-size:.8125rem;font-weight:500;color:var(--text-2);background:none;border:none;transition:color var(--t),background var(--t)}
+    .nav a:hover,.nav button:hover{color:var(--text)}
+    .nav a.active,.nav button.active{background:var(--accent-soft);color:var(--accent-bright)}
+    .header-right{display:flex;align-items:center;gap:.625rem}
+    .icon-btn{width:38px;height:38px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--text-2);display:flex;align-items:center;justify-content:center;transition:border-color var(--t),color var(--t),background var(--t)}
+    .icon-btn:hover{border-color:var(--border-hover);color:var(--text);background:var(--surface-2)}
+    .icon-btn svg{width:16px;height:16px}
+    .login-btn{padding:.5rem 1.1rem;border-radius:var(--radius-md);background:var(--accent);color:#041008;font-weight:600;font-size:.8125rem;border:none;transition:background var(--t),transform var(--t)}
+    .login-btn:hover{background:var(--accent-bright)}
+    .menu-btn{display:none;background:none;border:none;color:var(--text);font-size:1.25rem;padding:.25rem}
+
+    /* SEARCH */
+    .search-section{padding:2rem 0 1.25rem}
+    .search-hero{text-align:center;margin-bottom:1.25rem}
+    .search-hero h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.35rem}
+    .search-hero p{color:var(--text-2);font-size:.9375rem;max-width:520px;margin:0 auto}
+    .search-bar{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);max-width:720px;margin:0 auto;padding:.35rem .35rem .35rem 1rem;transition:border-color var(--t),box-shadow var(--t);box-shadow:var(--shadow-sm)}
+    .search-bar:focus-within{border-color:var(--accent-ring);box-shadow:0 0 0 4px var(--accent-soft)}
+    .search-bar .search-icon{width:18px;height:18px;color:var(--text-3);flex-shrink:0;margin-right:.65rem}
+    .search-bar input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:.9375rem;padding:.7rem 0;min-width:0}
+    .search-bar input::placeholder{color:var(--text-3)}
+    .search-bar .search-btn{padding:.65rem 1.25rem;border:none;border-radius:var(--radius-lg);background:var(--accent);color:#041008;font-weight:600;font-size:.8125rem;display:flex;align-items:center;gap:.4rem;flex-shrink:0;transition:background var(--t)}
+    .search-bar .search-btn:hover{background:var(--accent-bright)}
+    .search-bar .search-btn svg{width:16px;height:16px}
+
+    .note-banner{display:flex;gap:.75rem;align-items:center;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);border-radius:var(--radius-md);padding:.7rem 1rem;margin:1rem auto 0;max-width:720px;font-size:.8125rem;color:#d4b86a;line-height:1.5}
+    .note-banner strong{color:#f0d080;font-weight:600}
+    .note-banner a{color:var(--accent-bright);font-weight:500}
+    .note-banner a:hover{text-decoration:underline}
+    .note-banner .note-close{margin-left:auto;background:none;border:none;color:var(--text-3);font-size:1.1rem;cursor:pointer;padding:.15rem .35rem;border-radius:var(--radius-sm);line-height:1;transition:color var(--t)}
+    .note-banner .note-close:hover{color:var(--text)}
+    .search-section.compact{padding:1rem 0 .75rem}
+    .search-section.compact .search-hero,
+    .search-section.compact .note-banner{display:none}
+    .note-banner.hidden{display:none}
+
+    main{min-height:calc(100vh - var(--nav-h) - 180px);padding-top:.5rem}
+    .page{display:none;padding-bottom:3rem}
+    .page.active{display:block}
+
+    /* SECTION HEADERS */
+    .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .nm-section-title{font-size:1.125rem;font-weight:600;color:var(--text);letter-spacing:-.02em;margin:0}
+    .section-head .nm-section-title{margin:0}
+    .section-sub{font-size:.8125rem;color:var(--text-3)}
+
+    /* HOME */
+    .home-layout{display:grid;grid-template-columns:1fr 280px;gap:1.75rem;align-items:start}
+    .home-main{display:flex;flex-direction:column;gap:2.5rem}
+    .nm-skins-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.625rem}
+    .nm-skin-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;cursor:pointer;transition:border-color var(--t),transform var(--t),background var(--t)}
+    .nm-skin-card:hover{border-color:var(--border-hover);background:var(--surface-2);transform:translateY(-1px)}
+    .nm-skin-head{display:flex;justify-content:space-between;align-items:center;padding:.45rem .6rem;font-size:.6875rem;border-bottom:1px solid var(--border);min-height:28px}
+    .nm-skin-rank{color:var(--accent-bright);font-weight:700;font-variant-numeric:tabular-nums}
+    .nm-skin-name{color:var(--text-2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px;text-align:right}
+    .nm-skin-body{height:140px;background:var(--viewer-bg);display:flex;align-items:flex-end;justify-content:center;padding-bottom:.35rem}
+    .nm-skin-body img{height:124px;width:auto;max-width:100%;object-fit:contain;image-rendering:pixelated}
+    .nm-skin-foot{display:flex;justify-content:space-between;padding:.4rem .6rem;font-size:.6875rem;color:var(--text-3);border-top:1px solid var(--border)}
+    .nm-skin-foot .stars{color:var(--accent-bright);font-weight:500}
+    .nm-continue{text-align:right;margin-top:.75rem}
+    .nm-continue a{color:var(--accent-bright);font-size:.8125rem;font-weight:600}
+    .nm-continue a:hover{text-decoration:underline}
+
+    .nm-servers{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+    .nm-server-row{display:grid;grid-template-columns:40px 32px 1fr auto auto;gap:.75rem;align-items:center;padding:.85rem 1rem;border-bottom:1px solid var(--border);font-size:.8125rem;transition:background var(--t);cursor:default}
+    .nm-server-row:last-child{border-bottom:none}
+    .nm-server-row:hover{background:var(--surface-2)}
+    .nm-server-row.featured{background:linear-gradient(90deg,rgba(52,208,88,.08),transparent);border-left:2px solid var(--accent)}
+    .nm-server-row.featured .nm-server-rank{color:var(--accent-bright);font-weight:700}
+    .nm-server-rank{color:var(--text-3);font-size:.75rem;text-align:center;font-variant-numeric:tabular-nums}
+    .nm-server-name{color:var(--text);font-weight:600;display:block;margin-bottom:.15rem;font-size:.875rem}
+    .nm-server-host{display:block;font-size:.6875rem;color:var(--accent-bright);font-family:"JetBrains Mono",ui-monospace,monospace;margin-bottom:.2rem;opacity:.85}
+    .nm-server-desc{color:var(--text-3);font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:360px}
+    .nm-server-players{color:var(--text-2);font-size:.75rem;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+    .nm-server-votes{color:var(--accent-bright);font-size:.75rem;white-space:nowrap;text-align:right;min-width:72px;font-weight:500;font-variant-numeric:tabular-nums}
+
+    .home-sidebar{position:sticky;top:calc(var(--nav-h) + 1rem)}
+    .nm-post-card{background:var(--surface);border:1px solid var(--accent-ring);border-radius:var(--radius-lg);padding:1rem 1.125rem 1rem;position:relative;overflow:hidden}
+    .nm-post-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-dark),var(--accent-bright),var(--accent-dark))}
+    .nm-post-badge{display:inline-block;margin-bottom:.75rem;padding:.2rem .55rem;border-radius:var(--radius-full);background:var(--accent-soft);border:1px solid var(--accent-ring);color:var(--accent-bright);font-size:.6875rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .nm-post-head{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.875rem}
+    .nm-post-avatar{width:44px;height:44px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+    .nm-post-avatar img{width:100%;height:100%;display:block;object-fit:cover;image-rendering:pixelated;image-rendering:crisp-edges}
+    .nm-post-ident{flex:1;min-width:0}
+    .nm-post-name-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .nm-post-name{font-weight:700;font-size:.9375rem;color:var(--text);line-height:1.2}
+    .nm-post-follow{color:var(--accent-bright);font-size:.8125rem;font-weight:500;flex-shrink:0}
+    .nm-post-follow:hover{text-decoration:underline}
+    .nm-post-handle{color:var(--text-3);font-size:.8125rem;margin-top:.15rem;line-height:1.2}
+    .nm-post-body{margin-bottom:.875rem}
+    .nm-post-hl{display:block;color:var(--text-2);font-size:.875rem;line-height:1.55;margin-bottom:.65rem}
+    .nm-post-hl:last-child{margin-bottom:0}
+    .nm-post-hl strong{font-weight:700;color:var(--text)}
+    .nm-post-stats{display:flex;align-items:center;gap:1.35rem;margin-bottom:.45rem}
+    .nm-post-stat{display:inline-flex;align-items:center;gap:.35rem;color:var(--text-3);font-size:.8125rem;font-variant-numeric:tabular-nums}
+    .nm-post-stat svg{width:16px;height:16px;fill:currentColor;opacity:.75;flex-shrink:0}
+    .nm-post-time{font-size:.8125rem;color:var(--text-3);padding-bottom:.25rem}
+    .nm-post-brand{display:flex;align-items:center;justify-content:flex-end;gap:.4rem;margin-top:.15rem}
+    .nm-post-brand img{width:18px;height:18px;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+    .nm-post-brand span{font-size:.8125rem;font-weight:600;color:var(--text)}
+
+    /* AUTH MODALS */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-overlay.open{display:flex}
+    .auth-modal{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-xl);width:100%;max-width:420px;padding:1.5rem;position:relative;box-shadow:var(--shadow-md)}
+    .auth-modal.hidden{display:none}
+    .modal-close{position:absolute;top:1rem;right:1rem;background:var(--surface);border:1px solid var(--border);color:var(--text-2);font-size:1rem;cursor:pointer;line-height:1;width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;transition:color var(--t),border-color var(--t)}
+    .modal-close:hover{color:var(--text);border-color:var(--border-hover)}
+    .auth-tabs{display:flex;gap:.25rem;margin-bottom:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:.25rem}
+    .auth-tab{flex:1;padding:.55rem;border:none;border-radius:var(--radius-sm);background:transparent;color:var(--text-2);font-size:.8125rem;font-weight:500;cursor:pointer;transition:var(--t)}
+    .auth-tab.active{background:var(--surface-3);color:var(--text)}
+    .auth-modal h2{font-size:1.0625rem;font-weight:600;margin-bottom:1.125rem;letter-spacing:-.02em}
+    .auth-field{margin-bottom:.875rem}
+    .auth-field label{display:block;font-size:.75rem;font-weight:500;color:var(--text-2);margin-bottom:.35rem}
+    .auth-field input{width:100%;padding:.7rem .85rem;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.875rem;outline:none;transition:border-color var(--t),box-shadow var(--t)}
+    .auth-field input:focus{border-color:var(--accent-ring);box-shadow:0 0 0 3px var(--accent-soft)}
+    .auth-check{display:flex;align-items:flex-start;gap:.5rem;font-size:.75rem;color:var(--text-2);margin:.75rem 0 1rem;line-height:1.5}
+    .auth-check input{margin-top:.15rem;accent-color:var(--accent)}
+    .auth-check a{color:var(--accent-bright)}
+    .auth-submit{width:100%;padding:.75rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:#041008;font-weight:600;font-size:.875rem;cursor:pointer;margin-bottom:1rem;transition:background var(--t)}
+    .auth-submit:hover{background:var(--accent-bright)}
+    .auth-or{display:flex;align-items:center;gap:.65rem;color:var(--text-3);font-size:.75rem;margin-bottom:1rem}
+    .auth-or::before,.auth-or::after{content:'';flex:1;height:1px;background:var(--border)}
+    .auth-discord{width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem;border:none;border-radius:var(--radius-md);background:var(--discord);color:#fff;font-weight:600;font-size:.8125rem;cursor:pointer;text-decoration:none;transition:filter var(--t)}
+    .auth-discord:hover{filter:brightness(1.06)}
+    .auth-discord svg{width:18px;height:18px;fill:currentColor}
+    .last-step p{color:var(--text-2);font-size:.8125rem;line-height:1.6;margin-bottom:1rem}
+    .last-step ol{padding:0;list-style:none;counter-reset:step}
+    .last-step li{counter-increment:step;position:relative;padding-left:2rem;margin-bottom:.875rem;font-size:.8125rem;color:var(--text-2);line-height:1.6}
+    .last-step li::before{content:counter(step);position:absolute;left:0;top:0;width:22px;height:22px;border-radius:var(--radius-full);background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6875rem;color:var(--text);font-weight:600}
+    .last-step .inline-discord{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .55rem;border-radius:var(--radius-full);background:var(--discord);color:#fff;font-size:.75rem;font-weight:600;text-decoration:none;vertical-align:middle}
+    .last-step .inline-discord svg{width:13px;height:13px;fill:currentColor}
+    .last-next{width:100%;padding:.75rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:#041008;font-weight:600;font-size:.875rem;cursor:pointer;margin-top:.5rem;transition:background var(--t)}
+    .last-next:hover{background:var(--accent-bright)}
+
+    /* PROFILE — NameMC layout */
+    .suspend{display:flex;gap:.875rem;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:var(--radius-md);padding:1rem 1.15rem;margin:0 0 1.25rem}
+    .suspend[hidden]{display:none!important}
+    .suspend svg{flex-shrink:0;color:var(--danger);margin-top:2px}
+    .suspend strong{display:block;font-size:.875rem;margin-bottom:.25rem}
+    .suspend p{font-size:.8125rem;color:var(--text-2);line-height:1.55}
+    .suspend a{color:#fca5a5;text-decoration:underline}
+    .profile-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+    .profile-name{font-size:1.75rem;font-weight:700;margin:0;letter-spacing:-.03em;color:var(--text)}
+    .profile-columns{display:grid;grid-template-columns:minmax(300px,400px) 1fr;gap:1.5rem;align-items:start}
+    .profile-left{display:flex;flex-direction:column;gap:0}
+    .profile-right{display:flex;flex-direction:column;gap:1rem}
+    .nm-viewer-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;position:relative;margin-bottom:1.25rem}
+    .nm-viewer-box canvas{display:block;margin:0 auto;width:100%!important;height:auto!important;background:var(--viewer-bg);min-height:360px}
+    .nm-viewer-play{position:absolute;top:.65rem;right:.65rem;width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(7,9,8,.8);border:1px solid var(--border);color:var(--text-2);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+    .nm-viewer-play svg{width:14px;height:14px;fill:currentColor;margin-left:2px}
+    .nm-viewer-play.on{color:var(--accent-bright);border-color:var(--accent-ring);background:rgba(52,208,88,.12)}
+    .viewer-tools{position:absolute;bottom:.65rem;right:.65rem;display:flex;gap:.35rem}
+    .vtool{width:32px;height:32px;border-radius:var(--radius-sm);background:rgba(7,9,8,.85);border:1px solid var(--border);color:var(--text-2);font-size:.8rem;backdrop-filter:blur(8px);transition:var(--t)}
+    .vtool:hover{border-color:var(--border-hover);color:var(--text)}
+    .vtool.on{color:var(--accent-bright);border-color:var(--accent-ring);background:rgba(52,208,88,.1)}
+    .nm-profile-section{margin-bottom:1.25rem}
+    .nm-profile-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+    .nm-profile-section h3{font-size:.9375rem;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0;margin:0}
+    .nm-profile-section h3 span{color:var(--text-3);font-weight:500}
+    .nm-section-link{font-size:.8125rem;color:var(--accent-bright);font-weight:500}
+    .nm-section-link:hover{text-decoration:underline}
+    .nm-skin-row{display:flex;flex-wrap:wrap;gap:.5rem}
+    .nm-skin-item{width:48px;height:48px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--viewer-bg);flex-shrink:0;padding:0;cursor:pointer;transition:border-color var(--t),box-shadow var(--t)}
+    .nm-skin-item:hover{border-color:var(--border-hover)}
+    .nm-skin-item.active,.nm-skin-item:focus-visible{border-color:var(--accent-bright);box-shadow:0 0 0 2px var(--accent-soft);outline:none}
+    .nm-skin-item img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated;display:block;pointer-events:none}
+    .nm-cape-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+    .nm-cape-item{width:40px;height:58px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--viewer-bg);flex-shrink:0;padding:0;cursor:pointer;transition:border-color var(--t),box-shadow var(--t)}
+    .nm-cape-item:hover{border-color:var(--border-hover)}
+    .nm-cape-item.active,.nm-cape-item:focus-visible{border-color:var(--accent-bright);box-shadow:0 0 0 2px var(--accent-soft);outline:none}
+    .nm-cape-item img{width:100%;height:100%;object-fit:cover;object-position:center top;image-rendering:pixelated;display:block;pointer-events:none}
+    .no-capes{color:var(--text-3);font-size:.8125rem;padding:.25rem 0}
+    .nm-profile-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+    .nm-profile-box-title{font-size:.9375rem;font-weight:600;padding:.85rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+    .nm-profile-table{width:100%}
+    .nm-profile-row{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid var(--border);font-size:.8125rem}
+    .nm-profile-row:last-child{border-bottom:none}
+    .nm-profile-label{padding:.7rem 1rem;color:var(--text-3);font-weight:500;background:rgba(255,255,255,.015)}
+    .nm-profile-value{padding:.7rem 1rem;color:var(--text-2);display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;word-break:break-all}
+    .nm-profile-value.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.75rem}
+    .nm-copy-link{background:none;border:none;color:var(--accent-bright);font-size:.75rem;font-weight:500;cursor:pointer;padding:0;flex-shrink:0}
+    .nm-copy-link:hover{text-decoration:underline}
+    .badge{display:inline-block;padding:.15rem .5rem;border-radius:var(--radius-sm);font-size:.625rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .badge.red{background:rgba(248,113,113,.1);color:var(--danger);border:1px solid rgba(248,113,113,.2)}
+    .badge.green{background:var(--accent-soft);color:var(--accent-bright);border:1px solid var(--accent-ring)}
+    .nm-hist-table{width:100%;border-collapse:collapse;font-size:.8125rem}
+    .nm-hist-table th{text-align:left;padding:.55rem 1rem;color:var(--text-3);font-weight:500;font-size:.75rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.015)}
+    .nm-hist-table th:last-child{width:52px;text-align:right}
+    .nm-hist-table td{padding:.6rem 1rem;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:middle}
+    .nm-hist-table tr:last-child td{border-bottom:none}
+    .nm-hist-table .hist-name{color:var(--text);font-weight:500}
+    .nm-hist-table .hist-cur{display:inline-block;margin-left:.35rem;padding:.1rem .35rem;border-radius:3px;background:var(--accent-soft);color:var(--accent-bright);font-size:.625rem;font-weight:700;text-transform:uppercase}
+    .nm-hist-table td:last-child{text-align:right}
+    .nm-subsection{padding:1rem}
+    .nm-subsection h4{font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:.65rem;font-weight:600}
+    .api-btns{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+    .api-btns a{display:block;padding:.55rem .5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--accent-bright);font-size:.6875rem;text-align:center;font-weight:500;transition:var(--t)}
+    .api-btns a:hover{background:var(--accent-soft);border-color:var(--accent-ring)}
+    .head-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+    .head-row select{padding:.45rem .65rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.8125rem}
+    .head-cmd{display:flex;gap:.4rem}
+    .head-cmd input{flex:1;padding:.55rem .65rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.75rem;font-family:"JetBrains Mono",monospace}
+    .copy-btn{padding:3px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:.6875rem;transition:var(--t);flex-shrink:0}
+    .copy-btn:hover{border-color:var(--border-hover);color:var(--text)}
+    .panel-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+    .viewer-wrap{position:relative;display:flex;align-items:center;justify-content:center;min-height:0}
+    .viewer-wrap canvas{display:block;margin:0 auto;max-width:100%;height:auto!important}
+    .cv-preview{position:relative;min-height:420px}
+    .cv-preview canvas{display:block;margin:0 auto;width:100%!important;height:auto!important;background:var(--viewer-bg)}
+    .viewer-label,.cv-preview-header{font-size:.8125rem;color:var(--text-2);font-weight:500;padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+    .info-panel{padding:1.35rem}
+    .info-top{display:flex;gap:1rem;align-items:center;padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid var(--border)}
+    .info-top img{width:52px;height:52px;image-rendering:pixelated;border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .info-top h1{font-size:1.35rem;letter-spacing:-.02em}
+    .loading,.error-state{text-align:center;padding:4rem 1rem;color:var(--text-2)}
+    .spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 1rem;animation:spin .65s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .error-state h2{color:var(--danger);margin-bottom:.5rem;font-size:1.125rem}
+    .profile-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:.5rem}
+    .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem}
+    .profile-card h3{font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:.875rem;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+    .profile-card h3 a{font-size:.75rem;color:var(--accent-bright);text-transform:none;letter-spacing:0;font-weight:500}
+    .viewer-checker{background:var(--viewer-bg)}
+    .skin-history-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
+    .skin-history-grid img{width:100%;aspect-ratio:1;image-rendering:pixelated;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--viewer-bg)}
+    .cape-showcase{display:flex;justify-content:center;align-items:center;padding:.75rem 0;min-height:120px}
+    .cape-display{width:100%;max-width:200px;min-height:100px;object-fit:contain;image-rendering:pixelated;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-subtle)}
+    .name-hist-item{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.8125rem;color:var(--text-2)}
+    .name-hist-item:last-child{border-bottom:none}
+    .name-hist-item .cur{background:var(--accent-soft);color:var(--accent-bright);font-size:.625rem;padding:.15rem .45rem;border-radius:var(--radius-sm);font-weight:600}
+    .info-row{display:flex;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.875rem}
+    .info-row:last-child{border-bottom:none}
+    .info-row dt{color:var(--text-3);min-width:105px;font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+    .info-row dd{flex:1;word-break:break-all;color:var(--text-2)}
+    .cape-img{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+    .cape-img h4{font-size:.75rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.45rem;font-weight:600}
+    .cape-img img{max-width:100%;image-rendering:pixelated;border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .file-warn{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);color:#d4b86a;padding:.65rem 1rem;border-radius:var(--radius-md);font-size:.8125rem;margin-bottom:1rem;text-align:center}
+
+    .page-title{font-size:1.125rem;font-weight:600;margin:1rem 0 1.25rem;letter-spacing:-.02em}
+
+    /* LEGAL PAGES */
+    .legal-doc{max-width:720px;margin:0 auto 3rem}
+    .legal-doc h1{font-size:1.75rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.35rem}
+    .legal-doc .legal-updated{font-size:.8125rem;color:var(--text-3);margin-bottom:1.75rem}
+    .legal-doc h2{font-size:1rem;font-weight:600;margin:1.5rem 0 .65rem;color:var(--text)}
+    .legal-doc p,.legal-doc li{font-size:.875rem;line-height:1.7;color:var(--text-2);margin-bottom:.75rem}
+    .legal-doc ul{padding-left:1.25rem;margin-bottom:1rem}
+    .legal-doc a{color:var(--accent-bright);text-decoration:underline}
+    .legal-doc .legal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.75rem}
+
+    /* SKIN MAKER */
+    .maker-grid{display:grid;grid-template-columns:200px 1fr minmax(280px,340px);gap:1rem;min-height:520px;align-items:stretch}
+    .side-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.125rem}
+    .side-panel h3{font-size:.6875rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:.65rem;font-weight:600}
+    .sel-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:1.25rem}
+    .sel-btn{padding:.45rem .35rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:.75rem;text-align:center;transition:var(--t)}
+    .sel-btn.active{border-color:var(--accent-ring);color:var(--accent-bright);background:var(--accent-soft)}
+    .face-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem}
+    .mini-skin{margin-top:1rem;text-align:center}
+    .mini-skin canvas{width:80px;height:80px;image-rendering:pixelated;border:1px solid var(--border);border-radius:var(--radius-sm)}
+    .editor-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.125rem;display:flex;flex-direction:column}
+    .editor-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+    .editor-toolbar label{display:flex;align-items:center;gap:.35rem;font-size:.8125rem;color:var(--text-2)}
+    .tool-btn{padding:.4rem .7rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:.75rem;transition:var(--t)}
+    .tool-btn.active,.tool-btn.save{background:var(--accent-soft);color:var(--accent-bright);border-color:var(--accent-ring)}
+    .tool-btn.save{background:var(--accent);color:#041008;font-weight:600;border-color:transparent}
+    .editor-label{font-size:.8125rem;color:var(--text-2);margin-bottom:.5rem}
+    #faceCanvas{width:280px;height:280px;image-rendering:pixelated;border:1px solid var(--border);border-radius:var(--radius-md);cursor:crosshair;background:#3d3d52;display:block;margin:0 auto}
+    .editor-hint{font-size:.75rem;color:var(--text-3);text-align:center;margin-top:.5rem}
+    .maker-preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;min-height:520px}
+    .maker-preview-header{font-size:.8125rem;color:var(--text-2);font-weight:500;padding:.75rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+    .maker-preview-body{position:relative;flex:1;display:flex;align-items:center;justify-content:center;min-height:420px;padding:.5rem}
+    .maker-preview-body canvas{display:block;width:100%!important;height:auto!important;max-width:100%;background:transparent}
+
+    /* CAPES */
+    .capes-title{text-align:center;font-size:1.125rem;font-weight:600;margin:1rem 0 .35rem;letter-spacing:-.02em}
+    .capes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.625rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.125rem}
+    .cape-card{cursor:pointer;border-radius:var(--radius-md);border:1px solid var(--border);padding:.75rem .5rem;transition:var(--t);background:var(--surface-2);text-align:center}
+    .cape-card:hover{border-color:var(--accent-ring);background:var(--surface-3);transform:translateY(-1px)}
+    .cape-card img{width:100%;height:96px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto}
+    .cape-card .cape-label{font-size:.75rem;color:var(--text-2);margin-top:.45rem;line-height:1.2}
+
+    /* CAPE VIEWER */
+    .cv-layout{display:grid;grid-template-columns:340px 1fr;gap:1rem}
+    .cv-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.125rem;display:flex;flex-direction:column;gap:.75rem}
+    .cv-sidebar h2{font-size:1rem;margin-bottom:.25rem;font-weight:600}
+    .field-label{font-size:.75rem;font-weight:500;color:var(--text-3);margin-bottom:.35rem}
+    .field-row{display:flex;gap:.4rem}
+    .field-row input{flex:1;padding:.55rem .65rem;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.8125rem;outline:none}
+    .field-row input:focus{border-color:var(--accent-ring);box-shadow:0 0 0 3px var(--accent-soft)}
+    .field-row button{padding:.55rem .85rem;border-radius:var(--radius-md);background:var(--accent);color:#041008;font-weight:600;border:none;font-size:.8125rem}
+    .btn-row{display:flex;flex-wrap:wrap;gap:.4rem}
+    .btn-row button{padding:.4rem .65rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);font-size:.75rem;transition:var(--t)}
+    .btn-row button:hover{border-color:var(--border-hover);color:var(--text)}
+    .cv-capes{flex:1;overflow-y:auto;max-height:340px;display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem;padding-right:.25rem}
+    .cv-capes .cape-card{padding:.4rem}
+    .cv-capes .cape-card img{height:72px}
+    .cv-capes .cape-card.sel{border-color:var(--accent-ring);background:var(--accent-soft)}
+    .cv-capes::-webkit-scrollbar{width:4px}
+    .cv-capes::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:2px}
+    .cv-count{font-size:.75rem;color:var(--text-3)}
+    .cv-preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;position:relative;min-height:420px}
+
+    /* FOOTER */
+    footer{background:var(--bg-subtle);border-top:1px solid var(--border);margin-top:3rem;padding:3rem 0 1.5rem}
+    .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2rem}
+    .footer-brand p{color:var(--text-2);font-size:.8125rem;margin-top:.65rem;max-width:260px;line-height:1.6}
+    .footer-col h4{font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:.875rem;font-weight:600}
+    .footer-col a{display:block;color:var(--text-2);font-size:.8125rem;padding:.25rem 0;transition:color var(--t)}
+    .footer-col a:hover{color:var(--accent-bright)}
+    .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:1.25rem;border-top:1px solid var(--border);font-size:.75rem;color:var(--text-3)}
+    .footer-bottom a{margin-left:1rem;color:var(--text-2);transition:color var(--t)}
+    .footer-bottom a:hover{color:var(--accent-bright)}
+
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(60px);background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:.6rem 1.125rem;border-radius:var(--radius-md);font-size:.8125rem;font-weight:500;z-index:300;opacity:0;transition:.3s var(--ease);pointer-events:none;box-shadow:var(--shadow-md)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    @media(max-width:1024px){
+      .home-layout{grid-template-columns:1fr}
+      .home-sidebar{position:static;order:-1}
+      .nm-skins-grid{grid-template-columns:repeat(4,1fr)}
+      .nm-server-desc{max-width:180px}
+      .capes-grid{grid-template-columns:repeat(4,1fr)}
+      .maker-grid{grid-template-columns:1fr}
+      .cv-layout{grid-template-columns:1fr}
+      .profile-columns,.profile-layout{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      .nav{display:none;position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;background:var(--surface);padding:.75rem;border-bottom:1px solid var(--border);border-radius:0;border:1px solid var(--border);border-top:none}
+      .nav.open{display:flex}
+      .menu-btn{display:block}
+      .search-hero h1{font-size:1.35rem}
+      .search-bar{border-radius:var(--radius-lg);padding:.3rem .3rem .3rem .85rem}
+      .search-bar .search-btn span{display:none}
+      .nm-skins-grid,.capes-grid{grid-template-columns:repeat(2,1fr)}
+      .nm-server-row{grid-template-columns:32px 1fr;grid-template-rows:auto auto}
+      .nm-server-players,.nm-server-votes{display:none}
+      .footer-grid{grid-template-columns:1fr}
+      .footer-bottom{flex-direction:column;gap:.5rem;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="wrap header-inner">
+    <a class="logo" id="logoBtn"><div class="logo-icon" aria-hidden="true"><img src="/creeper-logo.png" alt=""></div><span class="logo-name">MC<span class="brand-accent">Search</span></span></a>
+    <nav class="nav" id="mainNav">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="skin-maker">Skin Maker</button>
+      <button data-page="capes">Capes</button>
+      <button data-page="cape-viewer">Cape Viewer</button>
+      <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a>
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" title="Theme" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="login-btn" id="loginBtn">Login / Signup</button>
+      <button class="menu-btn" id="menuBtn">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="search-section wrap" id="globalSearch">
+  <div class="search-hero">
+    <h1>Search Minecraft profiles</h1>
+    <p>Look up any Java username or UUID — skins, capes, name history & 3D preview.</p>
+  </div>
+  <form class="search-bar" id="globalSearchForm">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="globalSearchInput" placeholder="Username, UUID, server or skin…" autocomplete="off" spellcheck="false">
+    <button type="submit" class="search-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Search</span>
+    </button>
+  </form>
+  <div class="note-banner" id="noteBanner">
+    <div><strong>Note:</strong> The only official Discord server for MCSearch is <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">discord.gg/minecraftserver</a>.</div>
+    <button type="button" class="note-close" id="noteClose" aria-label="Close">×</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <section id="page-home" class="page active">
+    <div class="home-layout">
+      <div class="home-main">
+        <section>
+          <div class="section-head">
+            <h2 class="nm-section-title">Trending Skins</h2>
+            <span class="section-sub">Popular profiles this week</span>
+          </div>
+          <div class="nm-skins-grid" id="trendingSkins"></div>
+          <div class="nm-continue"><a href="#" id="skinsContinue">View all capes →</a></div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2 class="nm-section-title">Top Servers</h2>
+            <span class="section-sub">Community favorites</span>
+          </div>
+          <div class="nm-servers" id="serverList"></div>
+          <div class="nm-continue"><a href="#" id="serversContinue">Browse more →</a></div>
+        </section>
+      </div>
+      <aside class="home-sidebar">
+        <div class="nm-post-card">
+          <div class="nm-post-badge">5 Year Anniversary</div>
+          <div class="nm-post-head">
+            <div class="nm-post-avatar" aria-hidden="true"><img src="/creeper-logo.png" alt=""></div>
+            <div class="nm-post-ident">
+              <div class="nm-post-name-row">
+                <span class="nm-post-name">MCSearch</span>
+                <a href="https://discord.gg/minecraftserver" class="nm-post-follow" target="_blank" rel="noopener">Follow</a>
+              </div>
+              <div class="nm-post-handle">@mcsearch.cc</div>
+            </div>
+          </div>
+          <div class="nm-post-body">
+            <span class="nm-post-hl">MCSearch is turning <strong>5 years old</strong> — thank you for being with us! 🎉</span>
+            <span class="nm-post-hl">Five years of profile lookups, skin previews, cape try-ons, and name history — none of it would mean anything without this community.</span>
+            <span class="nm-post-hl">Here's to many more years of Minecraft tools together. 💚</span>
+          </div>
+          <div class="nm-post-stats">
+            <span class="nm-post-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>1.2K</span>
+            <span class="nm-post-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>214</span>
+            <span class="nm-post-stat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>389</span>
+          </div>
+          <div class="nm-post-time">12:00 PM · Jun 9, 2021</div>
+          <div class="nm-post-brand">
+            <img src="/creeper-logo.png" alt="">
+            <span>MCSearch</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="page-profile" class="page">
+    <div id="profileLoading" class="loading" hidden><div class="spinner"></div><p>Loading profile...</p></div>
+    <div id="profileError" class="error-state" hidden>
+      <h2>Player Not Found</h2>
+      <p id="errorMsg"></p>
+      <button class="login-btn" style="margin-top:1rem" id="errorHomeBtn">Back to Home</button>
+    </div>
+    <div id="profileContent" hidden>
+      <div id="fileWarn" class="file-warn" hidden>⚠ Open this site via <strong>http://localhost</strong> not by double-clicking the file. Run: <code>python -m http.server 3000</code></div>
+      <div id="profileSuspend" class="suspend" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <strong>This mcsearch.cc account has been suspended.</strong>
+          <p>We explicitly prohibit the sale or trading of Minecraft accounts and work directly with Mojang to enforce Minecraft's EULA. If you are seeing this, this account has already been reported. If you want to appeal <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Click Here</a>.</p>
+        </div>
+      </div>
+      <div class="profile-header">
+        <h1 class="profile-name" id="pNameBig">—</h1>
+      </div>
+      <div class="profile-columns">
+        <div class="profile-left">
+          <div class="nm-viewer-box profile-viewer">
+            <canvas id="profileCanvas"></canvas>
+            <button type="button" class="nm-viewer-play" id="pWalk" title="Toggle walk animation" aria-label="Walk">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="viewer-tools">
+              <button type="button" class="vtool on" id="pRotate" title="Rotate">↻</button>
+            </div>
+          </div>
+
+          <div class="nm-profile-section">
+            <div class="nm-profile-section-head">
+              <h3>Skins <span id="skinHistCount">(1)</span></h3>
+              <a href="#" id="dlSkin" class="nm-section-link">Download</a>
+            </div>
+            <div class="nm-skin-row" id="skinHistory"></div>
+          </div>
+
+          <div class="nm-profile-section">
+            <h3>Capes <span id="capeCount">(0)</span></h3>
+            <div id="capeList"><p class="no-capes">No capes found.</p></div>
+          </div>
+        </div>
+
+        <div class="profile-right">
+          <div class="nm-profile-box">
+            <div class="nm-profile-box-title">Profile</div>
+            <div class="nm-profile-table">
+              <div class="nm-profile-row">
+                <span class="nm-profile-label">UUID</span>
+                <span class="nm-profile-value mono"><span id="pUuid">—</span> <button type="button" class="nm-copy-link" id="copyUuid">Copy</button></span>
+              </div>
+              <div class="nm-profile-row">
+                <span class="nm-profile-label">Views</span>
+                <span class="nm-profile-value" id="pViews">0 / month</span>
+              </div>
+              <div class="nm-profile-row">
+                <span class="nm-profile-label">Model</span>
+                <span class="nm-profile-value" id="pModel">Steve (Classic)</span>
+              </div>
+              <div class="nm-profile-row">
+                <span class="nm-profile-label">Status</span>
+                <span class="nm-profile-value"><span class="badge green" id="pStatus">Active</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="nm-profile-box">
+            <div class="nm-profile-box-title">Name History</div>
+            <div style="overflow-x:auto">
+              <table class="nm-hist-table">
+                <thead><tr><th>Name</th><th>Date</th><th>Age</th><th></th></tr></thead>
+                <tbody id="nameHistory"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="nm-profile-box">
+            <div class="nm-profile-box-title">Mojang API</div>
+            <div class="nm-subsection"><div class="api-btns" id="apiBtns"></div></div>
+          </div>
+
+          <div class="nm-profile-box">
+            <div class="nm-profile-box-title">Head Command</div>
+            <div class="nm-subsection">
+              <div class="head-row"><select id="mcVersion"><option>1.20.1</option><option>1.21.1</option><option>1.19.4</option></select></div>
+              <div class="head-cmd">
+                <input type="text" id="headCmd" readonly>
+                <button type="button" class="copy-btn" id="copyCmd">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKIN MAKER -->
+  <section id="page-skin-maker" class="page">
+    <div class="maker-grid">
+      <div class="side-panel">
+        <h3>Body Part</h3>
+        <div class="sel-grid" id="bodyParts">
+          <button class="sel-btn active" data-part="head">Head</button>
+          <button class="sel-btn" data-part="body">Body</button>
+          <button class="sel-btn" data-part="rarm">Right Arm</button>
+          <button class="sel-btn" data-part="larm">Left Arm</button>
+          <button class="sel-btn" data-part="rleg">Right Leg</button>
+          <button class="sel-btn" data-part="lleg">Left Leg</button>
+        </div>
+        <h3>Face</h3>
+        <div class="face-grid" id="faces">
+          <button class="sel-btn active" data-face="front">Front</button>
+          <button class="sel-btn" data-face="back">Back</button>
+          <button class="sel-btn" data-face="left">Left</button>
+          <button class="sel-btn" data-face="right">Right</button>
+          <button class="sel-btn" data-face="top">Top</button>
+          <button class="sel-btn" data-face="bottom">Bottom</button>
+        </div>
+        <div class="mini-skin"><h3 style="margin-bottom:.4rem">Full Skin</h3><canvas id="miniSkin" width="64" height="64"></canvas></div>
+      </div>
+      <div class="editor-panel">
+        <div class="editor-toolbar">
+          <label>Color <input type="color" id="mkColor" value="#00ff88"></label>
+          <button class="tool-btn active" data-tool="brush">Brush</button>
+          <button class="tool-btn" data-tool="eraser">Eraser</button>
+          <button class="tool-btn" data-tool="fill">Fill</button>
+          <button class="tool-btn" id="mkImport">Import</button>
+          <button class="tool-btn" id="mkReset">Reset</button>
+          <button class="tool-btn save" id="mkSave">Save PNG</button>
+          <input type="file" id="mkImportFile" accept="image/png" hidden>
+        </div>
+        <div class="editor-label" id="editLabel">Editing: Head — Front</div>
+        <canvas id="faceCanvas" width="128" height="128"></canvas>
+        <p class="editor-hint">Paint on the zoomed face. Changes sync to the full 3D model.</p>
+      </div>
+      <div class="maker-preview">
+        <div class="maker-preview-header">Preview</div>
+        <div class="maker-preview-body viewer-checker">
+          <canvas id="makerCanvas"></canvas>
+          <div class="viewer-tools"><button type="button" class="vtool on" id="mkRotate" title="Rotate">↻</button><button type="button" class="vtool on" id="mkWalk" title="Walk">🚶</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAPES -->
+  <section id="page-capes" class="page">
+    <div class="capes-title">Minecraft Capes</div>
+    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:1rem">Click any cape to open it in the Cape Viewer</p>
+    <div class="capes-grid" id="capesPageGrid"></div>
+  </section>
+
+  <!-- CAPE VIEWER -->
+  <section id="page-cape-viewer" class="page">
+    <h2 class="page-title">Cape Viewer</h2>
+    <div class="cv-layout">
+      <div class="cv-sidebar">
+        <div>
+          <div class="field-label">Player</div>
+          <div class="field-row">
+            <input type="text" id="cvPlayer" placeholder="Name/UUID">
+            <button id="cvLoad">Load</button>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button id="cvImportSkin">Import Skin</button>
+          <button id="cvImportCape">Import Cape</button>
+          <button id="cvClear">Clear Imports</button>
+          <input type="file" id="cvSkinFile" accept="image/png" hidden>
+          <input type="file" id="cvCapeFile" accept="image/png" hidden>
+        </div>
+        <div>
+          <div class="field-label">Search capes</div>
+          <input type="text" id="cvFilter" placeholder="Filter capes..." style="width:100%;padding:.5rem .65rem;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:.85rem">
+        </div>
+        <div class="cv-capes" id="cvCapeGrid"></div>
+        <div class="cv-count" id="cvCount"></div>
+      </div>
+      <div class="cv-preview">
+        <div class="cv-preview-header" id="cvPreviewLabel">Preview</div>
+        <canvas id="cvCanvas"></canvas>
+        <div class="viewer-tools" style="position:absolute;bottom:.65rem;right:.65rem">
+          <button class="vtool on" id="cvRotate">↻</button>
+          <button class="vtool" id="cvWalk">🚶</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="page-privacy" class="page">
+    <div class="legal-doc">
+      <div class="legal-box">
+        <h1>Privacy Policy</h1>
+        <p class="legal-updated">Last updated: June 22, 2026</p>
+        <p>MCSearch (<a href="https://mcsearch.cc">mcsearch.cc</a>) provides public Minecraft Java profile lookups. This policy explains what we collect and how we use it.</p>
+        <h2>Information we display</h2>
+        <p>Profile pages show publicly available Minecraft data such as usernames, UUIDs, skins, capes, and name history sourced from Mojang and third-party APIs. We do not operate Minecraft accounts.</p>
+        <h2>Information you provide</h2>
+        <p>If you create an account, contact support, or join our Discord, we may store your email address and messages you send us. We use this only to operate the service and respond to requests.</p>
+        <h2>Cookies &amp; local storage</h2>
+        <p>We use browser local storage for basic features such as view counters and UI preferences. We do not sell personal data to advertisers.</p>
+        <h2>Data removal</h2>
+        <p>To request removal of a profile listing or personal information, contact us at <a href="mailto:support@mcsearch.cc">support@mcsearch.cc</a> or via <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a>.</p>
+        <h2>Third parties</h2>
+        <p>We link to external services (Mojang APIs, skin CDNs, Discord). Their policies apply when you leave MCSearch.</p>
+        <h2>Contact</h2>
+        <p>Questions about this policy: <a href="mailto:support@mcsearch.cc">support@mcsearch.cc</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMS -->
+  <section id="page-terms" class="page">
+    <div class="legal-doc">
+      <div class="legal-box">
+        <h1>Terms of Service</h1>
+        <p class="legal-updated">Last updated: June 22, 2026</p>
+        <p>By using MCSearch you agree to these terms. If you do not agree, please do not use the site.</p>
+        <h2>Service description</h2>
+        <p>MCSearch is an unofficial Minecraft profile lookup and preview tool. We are not affiliated with Mojang Studios or Microsoft.</p>
+        <h2>Acceptable use</h2>
+        <ul>
+          <li>Do not use MCSearch to harass players, scrape data for spam, or attack our servers.</li>
+          <li>Do not attempt to buy, sell, or trade Minecraft accounts through this site.</li>
+          <li>Do not misrepresent MCSearch as an official Mojang product.</li>
+        </ul>
+        <h2>Profile suspensions</h2>
+        <p>We may mark public profiles as suspended when they are associated with account trading or EULA violations. Suspended listings may display a notice on the profile page.</p>
+        <h2>Disclaimer</h2>
+        <p>Profile data is provided “as is” from public sources and may be incomplete or outdated. MCSearch is provided without warranties of any kind.</p>
+        <h2>Limitation of liability</h2>
+        <p>MCSearch is not liable for indirect or consequential damages arising from use of the site or reliance on displayed profile data.</p>
+        <h2>Changes</h2>
+        <p>We may update these terms at any time. Continued use of the site after changes means you accept the updated terms.</p>
+        <h2>Contact</h2>
+        <p>Support: <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">discord.gg/minecraftserver</a> · <a href="mailto:support@mcsearch.cc">support@mcsearch.cc</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" style="cursor:pointer" id="footerLogo"><div class="logo-icon" aria-hidden="true"><img src="/creeper-logo.png" alt=""></div><span class="logo-name">MC<span class="brand-accent">Search</span></span></a>
+        <p>Minecraft username lookup, skin tools, and cape previews.</p>
+      </div>
+      <div class="footer-col"><h4>Product</h4>
+        <a href="#" data-nav="home">Home</a>
+        <a href="#" data-nav="skin-maker">Skin Maker</a>
+        <a href="#" data-nav="capes">Capes</a>
+        <a href="#" data-nav="cape-viewer">Cape Viewer</a>
+      </div>
+      <div class="footer-col"><h4>Legal</h4>
+        <a href="/privacy" data-nav="privacy">Privacy Policy</a>
+        <a href="/terms" data-nav="terms">Terms of Service</a>
+        <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Support</a>
+      </div>
+      <div class="footer-col"><h4>Community</h4>
+        <a href="https://discord.gg/minecraftserver" target="_blank">Discord</a>
+        <a href="mailto:support@mcsearch.cc">support@mcsearch.cc</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 MCSearch. All rights reserved.</span>
+      <div><a href="/privacy" data-nav="privacy">Privacy</a><a href="/terms" data-nav="terms">Terms</a><a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Support</a><a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a></div>
+    </div>
+  </div>
+</footer>
+<div class="modal-overlay" id="authOverlay">
+  <div class="auth-modal" id="authModal">
+    <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-tab="signup">Sign Up</button>
+      <button type="button" class="auth-tab" data-tab="login">Log In</button>
+    </div>
+    <h2 id="authTitle">Create your account</h2>
+    <form id="authForm">
+      <div class="auth-field">
+        <label for="authEmail">Email</label>
+        <input type="email" id="authEmail" autocomplete="email" required>
+      </div>
+      <div class="auth-field">
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" autocomplete="current-password" required>
+      </div>
+      <label class="auth-check" id="authCheckWrap">
+        <input type="checkbox" id="authAgree">
+        <span>I agree to the <a href="/terms" data-nav="terms">Terms of Service</a> and <a href="/privacy" data-nav="privacy">Privacy Policy</a>.</span>
+      </label>
+      <button type="submit" class="auth-submit" id="authSubmit">Sign Up</button>
+    </form>
+    <div class="auth-or">OR</div>
+    <a class="auth-discord" href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      <span id="authDiscordText">Sign up with Discord</span>
+    </a>
+  </div>
+  <div class="auth-modal last-step hidden" id="lastStepModal">
+    <button type="button" class="modal-close" data-close-modal aria-label="Close">×</button>
+    <h2>Last Step</h2>
+    <p>Finish setting up your MCSearch account by linking your Minecraft profile.</p>
+    <ol>
+      <li>To link your Minecraft account to MCSearch you first need to join the <a class="inline-discord" href="https://discord.gg/minecraftserver" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Discord server</a>.</li>
+      <li>Once you join, follow the steps to have your account linked to MCSearch via the Mojang API.</li>
+    </ol>
+    <button type="button" class="last-next" id="lastNext">Next</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var sv3 = window.skinview3d;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var POPULAR = ['Notch','jeb_','Dream','Technoblade','Dinnerbone','sweetily','CaptainSparklez','MumboJumbo','Grumm','Grian','EthosLab','xisumavoid','Floppa_4098','Sky_Skripts','wesmc7'];
+  var TRENDING = [
+    {name:'Notch',rank:1,age:'12.4d',stars:892},{name:'jeb_',rank:2,age:'9.1d',stars:654},
+    {name:'Dream',rank:3,age:'7.9d',stars:250},{name:'Technoblade',rank:4,age:'6.2d',stars:198},
+    {name:'Dinnerbone',rank:5,age:'5.8d',stars:176},{name:'sweetily',rank:6,age:'4.3d',stars:142},
+    {name:'CaptainSparklez',rank:7,age:'3.9d',stars:128},{name:'MumboJumbo',rank:8,age:'3.1d',stars:115},
+    {name:'Grumm',rank:9,age:'2.7d',stars:98},{name:'Grian',rank:10,age:'2.2d',stars:87},
+    {name:'EthosLab',rank:11,age:'1.9d',stars:76},{name:'xisumavoid',rank:12,age:'1.4d',stars:64}
+  ];
+  var SERVERS = [
+    {rank:1,name:'Minecraft Community',host:'play.minecraftcommunity.net',flag:'🟢',desc:'Survival · Economy · Events · Friendly Community · Join today!',players:'847 / 2,000',votes:12847,featured:true},
+    {rank:2,name:'FlowPvP',flag:'🇺🇸',desc:'🔪 FlowPvP 🔪 | The Best Practice Server 🔪 | 1.7-1.8',players:'1,092 / 5,000',votes:11199},
+    {rank:3,name:'MineFun',flag:'🇺🇸',desc:'MineFun | The Best Minecraft Server | Survival | Skyblock | Factions',players:'13,201 / 100,000',votes:10401},
+    {rank:4,name:'Hypixel',flag:'🇺🇸',desc:'Hypixel Network | SkyBlock | Bed Wars | SkyWars | Duels',players:'45,000 / 200,000',votes:9820},
+    {rank:5,name:'PvP Legacy',flag:'🇬🇧',desc:'PvP Legacy | Practice | Ranked | FFA | Pot PvP',players:'892 / 3,000',votes:7654},
+    {rank:6,name:'CubeCraft',flag:'🇪🇸',desc:'CubeCraft Games | EggWars | SkyWars | Lucky Blocks',players:'4,521 / 20,000',votes:6891}
+  ];
+  var PAGE_PATHS = { home:'/', 'skin-maker':'/skin-maker', capes:'/capes', 'cape-viewer':'/cape-viewer', privacy:'/privacy', terms:'/terms' };
+
+  var viewers = {};
+  var viewerResizeOpts = {};
+  var walks = {};
+  var currentProfile = null;
+  var capes = [];
+  var pendingCapeHash = null;
+  var skinCanvas = null, skinCtx = null;
+  var currentPart = 'head', currentFace = 'front', currentTool = 'brush', paintColor = '#00ff88';
+
+  var UV = {
+    head:{front:[8,8,8,8],back:[24,8,8,8],left:[0,8,8,8],right:[16,8,8,8],top:[8,0,8,8],bottom:[16,0,8,8]},
+    body:{front:[20,20,8,12],back:[32,20,8,12],left:[16,20,4,12],right:[28,20,4,12],top:[20,16,8,4],bottom:[28,16,8,4]},
+    rarm:{front:[44,20,4,12],back:[52,20,4,12],left:[40,20,4,12],right:[48,20,4,12],top:[44,16,4,4],bottom:[48,16,4,4]},
+    larm:{front:[36,52,4,12],back:[44,52,4,12],left:[32,52,4,12],right:[40,52,4,12],top:[36,48,4,4],bottom:[40,48,4,4]},
+    rleg:{front:[4,20,4,12],back:[12,20,4,12],left:[0,20,4,12],right:[8,20,4,12],top:[4,16,4,4],bottom:[8,16,4,4]},
+    lleg:{front:[20,52,4,12],back:[28,52,4,12],left:[16,52,4,12],right:[24,52,4,12],top:[20,48,4,4],bottom:[24,48,4,4]}
+  };
+
+  function toast(m) {
+    var t = $('toast');
+    t.textContent = m;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2500);
+  }
+
+  function formatUUID(r) {
+    var s = r.replace(/-/g, '');
+    if (s.length !== 32) return r;
+    return s.slice(0,8)+'-'+s.slice(8,12)+'-'+s.slice(12,16)+'-'+s.slice(16,20)+'-'+s.slice(20);
+  }
+  function stripUUID(u) { return u.replace(/-/g, ''); }
+  function isUUID(s) { return /^[0-9a-f]{32}$/i.test(s.replace(/-/g, '')); }
+  function avatarUrl(id, size) { return 'https://minotar.net/avatar/' + encodeURIComponent(id) + '/' + size + '.png'; }
+  function bodyRender(name) {
+    return 'https://minotar.net/body/' + encodeURIComponent(name) + '/120.png';
+  }
+  function profilePath(username) {
+    return '/profile/' + encodeURIComponent(username);
+  }
+  function bodyUrl(id, size) { return 'https://minotar.net/body/' + encodeURIComponent(id) + '/' + size + '.png'; }
+
+  function parseRoute() {
+    if (location.protocol === 'file:') {
+      var fh = (location.hash || '').match(/^#\/profile\/([^/?#]+)/i);
+      if (fh) return { page: 'profile', user: decodeURIComponent(fh[1]) };
+      return { page: 'home' };
+    }
+    var path = location.pathname.replace(/\/index\.html$/i, '').replace(/\/+$/, '') || '/';
+    var hash = location.hash || '';
+    var hm = hash.match(/^#\/profile\/([^/?#]+)/i);
+    if (hm) return { page: 'profile', user: decodeURIComponent(hm[1]) };
+    var pm = path.match(/\/profile\/([^/?#]+)/i);
+    if (pm) return { page: 'profile', user: decodeURIComponent(pm[1]) };
+    if (path === '/skin-maker') return { page: 'skin-maker' };
+    if (path === '/capes') return { page: 'capes' };
+    if (path === '/cape-viewer') return { page: 'cape-viewer' };
+    if (path === '/privacy') return { page: 'privacy' };
+    if (path === '/terms') return { page: 'terms' };
+    return { page: 'home' };
+  }
+  function setPageTitle(page, name) {
+    if (page === 'profile' && name) document.title = name + ' — MCSearch';
+    else if (page === 'privacy') document.title = 'Privacy Policy — MCSearch';
+    else if (page === 'terms') document.title = 'Terms of Service — MCSearch';
+    else if (page === 'home') document.title = 'MCSearch — Minecraft Profile Search';
+    else document.title = (page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')) + ' — MCSearch';
+  }
+  function navigateTo(page, opts) {
+    opts = opts || {};
+    if (!opts.skipHistory && location.protocol !== 'file:') {
+      var url = PAGE_PATHS[page] || '/';
+      if (page === 'profile' && opts.user) url = profilePath(opts.user);
+      history.pushState({ page: page, user: opts.user || null }, '', url);
+    } else if (page === 'profile' && opts.user && location.protocol === 'file:') {
+      location.hash = '#/profile/' + encodeURIComponent(opts.user);
+    }
+    showPage(page, opts);
+    setPageTitle(page, opts.user || (currentProfile && currentProfile.name));
+  }
+  function handleRoute() {
+    var route = parseRoute();
+    if (route.page === 'profile' && route.user) {
+      searchPlayer(route.user, { skipHistory: true });
+    } else {
+      showPage(route.page, { skipHistory: true });
+      setPageTitle(route.page);
+    }
+  }
+  function copyText(t) {
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { toast('Copied!'); });
+    else { prompt('Copy:', t); }
+  }
+
+  function getCounts() { try { return JSON.parse(localStorage.getItem('mc_searches') || '{}'); } catch (e) { return {}; } }
+  function bumpCount(uuid) {
+    var c = getCounts(), k = stripUUID(uuid);
+    c[k] = (c[k] || 0) + 1;
+    localStorage.setItem('mc_searches', JSON.stringify(c));
+    return c[k];
+  }
+
+  function capeTex(hash) { return 'https://textures.minecraft.net/texture/' + hash; }
+  function capeThumb(hash) { return 'https://crafthead.net/cape/' + hash; }
+  function defaultSkin() {
+    return craftSkin('8667ba71b85a4004af45717eab1fb98');
+  }
+
+  function defaultSkinUrls() {
+    var steveId = '8667ba71b85a4004af45717eab1fb98';
+    return [
+      craftSkin(steveId),
+      'https://mc-heads.net/skin/' + steveId,
+      'https://textures.minecraft.net/texture/1a4af718455d33aa78b65227367b3409de0d9cc784adde416482c52fe816dc1'
+    ];
+  }
+
+  function loadDefaultSteve(v) {
+    return loadSkinChain(v, defaultSkinUrls(), 'default');
+  }
+  function viewerOpts(extra) {
+    var o = { autoRotate: true, zoom: 0.75, checker: true };
+    if (extra) Object.keys(extra).forEach(function (k) { o[k] = extra[k]; });
+    return o;
+  }
+  function craftSkin(uuid) { return 'https://crafthead.net/skin/' + stripUUID(uuid); }
+  function craftCape(uuid) { return 'https://crafthead.net/cape/' + stripUUID(uuid); }
+  function textureHash(url) {
+    if (!url) return null;
+    var m = url.match(/\/([a-f0-9]{64})/i);
+    return m ? m[1] : null;
+  }
+
+  function parseProps(properties) {
+    if (!properties || !properties.length) return {};
+    try {
+      var tex = properties.find(function (p) { return p.name === 'textures'; });
+      if (!tex) return {};
+      var json = JSON.parse(atob(tex.value));
+      var t = json.textures || {};
+      return {
+        skinUrl: t.SKIN ? t.SKIN.url : null,
+        capeUrl: t.CAPE ? t.CAPE.url : null,
+        slim: !!(t.SKIN && t.SKIN.metadata && t.SKIN.metadata.model === 'slim')
+      };
+    } catch (e) { return {}; }
+  }
+
+  function formatHistDate(d) {
+    if (!d || isNaN(d.getTime())) return '—';
+    return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
+  }
+
+  function formatHistAge(fromDate) {
+    if (!fromDate || isNaN(fromDate.getTime())) return '—';
+    var days = Math.max(0, Math.floor((Date.now() - fromDate.getTime()) / 86400000));
+    if (days < 1) return '<1d';
+    if (days < 60) return '~' + days + 'd';
+    if (days < 365) return '~' + Math.floor(days / 30) + 'mo';
+    return '~' + Math.floor(days / 365) + 'y';
+  }
+
+  function buildNameHistory(profile) {
+    var list = [], seen = {};
+    function add(name, current, changedAt) {
+      if (!name) return;
+      var k = name.toLowerCase();
+      if (seen[k]) return;
+      seen[k] = true;
+      list.push({ username: name, current: !!current, changedAt: changedAt || null });
+    }
+    add(profile.name, true, null);
+    (profile.usernameHistory || []).forEach(function (e) {
+      var n = typeof e === 'string' ? e : (e.username || e.name);
+      if (!n || n.toLowerCase() === profile.name.toLowerCase()) return;
+      var dt = e.changed_at || e.changedAt || e.timestamp;
+      add(n, false, dt ? new Date(dt) : null);
+    });
+    (profile.extraNames || []).forEach(function (n) {
+      if (n.toLowerCase() !== profile.name.toLowerCase()) add(n, false, null);
+    });
+    return list;
+  }
+
+  function buildCapes() {
+    if (capes.length) return capes;
+    var defs = [
+      {n:'Migrator',h:'2340c0e03dd24a11b15a8b33c2a7e9e32abb2051b2481d0ba7defd635ca7a933'},
+      {n:'Vanilla',h:'f9a76537647989f9a0b6d001e320dac591c359e9e61a31f4ce11c88f207f0ad4'},
+      {n:'Mojang Studios',h:'9e507afc56359978a3eb3e32367042b853cddd0995d17d0da995662913fb00f7'},
+      {n:'15th Anniversary',h:'cd9d82ab17fd92022dbd4a86cde4c382a7540e117fae7b9a2853658505a80625'},
+      {n:'Purple Heart',h:'cb40a92e32b57fd732a00fc325e7afb00a7ca74936ad50d8e860152e482cfbde'},
+      {n:'Pan',h:'28de4a81688ad18b49e735a273e086c18f1e3966956123ccb574034c06f5d336'},
+      {n:'Minecon 2011',h:'953cac8b779fe41383e675ee2b86071a71658f2180f56fbce8aa315ea70e2ed6'},
+      {n:'Minecon 2012',h:'a2e8d97ec79100e90a75d369d1b3ba81273c4f82bc1b737e934eed4a854be1b6'},
+      {n:'Minecon 2013',h:'153b1a0dfcbae953cdeb6f2c2bf6bf79943239b1372780da44bcbb29273131da'},
+      {n:'Minecon 2015',h:'b0cc08840700447322d953a02b965f1d65a13a603bf64b17c803c21446fe1635'},
+      {n:'Minecon 2016',h:'e7dfea16dc83c97df01a12fabbd1216359c0cd0ea42f9999b6e97c584963e980'},
+      {n:'Translator',h:'1bf91499701404e21bd46b0191d63239a4ef76ebde88d27e4d430ac211df681e'},
+      {n:'Scrolls',h:'3efadf6510961830f9fcc077f19b4daf286d502b5f5aafbd807c7bbffcaca245'},
+      {n:'Copper',h:'5e6f3193e74cd16cdd6637d9bae5484e3a37ff2a14c2d157c659a07810b1bdca'},
+      {n:'Minecraft Experience',h:'7658c5025c77cfac7574aab3af94a46a8886e3b7722a895255fbf22ab8652434'},
+      {n:'Followers',h:'569b7f2a1d00d26f30efe3f9ab9ac817b1e6d35f4f3cfb0324ef2d328223d350'},
+      {n:'Common',h:'5ec930cdd2629c8771655c60eebeb867b4b6559b0e6d3bc71c40c96347fa03f0'},
+      {n:'Home',h:'1de21419009db483900da6298a1e6cbf9f1bc1523a0dcdc16263fab150693edd'},
+      {n:'Yearn',h:'308b32a9e303155a0b4262f9e5483ad4a22e3412e84fe8385a0bdd73dc41fa89'},
+      {n:'Menace',h:'dbc21e222528e30dc88445314f7be6ff12d3aeebc3c192054fba7e3b3f8c77b1'},
+      {n:'Zombie Horse',h:'a3f6e4f14801f3ea55e3d95b9b4ef3b5e8802d947f669de93d6ec4b9354a436b'}
+    ];
+    capes = defs.map(function (d) {
+      return { name: d.n, url: capeTex(d.h), hash: d.h, thumb: capeThumb(d.h) };
+    });
+    return capes;
+  }
+
+  function viewerDims(canvas, opts) {
+    opts = opts || {};
+    var wrap = canvas.parentElement;
+    var containerW = Math.floor(wrap && wrap.clientWidth ? wrap.clientWidth : (opts.fallbackWidth || 480));
+    if (containerW < 1) containerW = opts.fallbackWidth || 480;
+    var minW = opts.minWidth != null ? opts.minWidth : 200;
+    var maxW = opts.maxWidth != null ? opts.maxWidth : containerW;
+    var w = Math.max(minW, Math.min(maxW, containerW));
+    var ratio = opts.ratio != null ? opts.ratio : 0.88;
+    var h = Math.floor(w * ratio);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    return { w: w, h: h, dpr: dpr };
+  }
+
+  function applyViewerSize(canvas, viewer, dims) {
+    var pw = Math.floor(dims.w * dims.dpr);
+    var ph = Math.floor(dims.h * dims.dpr);
+    viewer.setSize(pw, ph);
+    canvas.style.width = dims.w + 'px';
+    canvas.style.height = dims.h + 'px';
+  }
+
+  function makeViewer(id, opts) {
+    opts = opts || {};
+    if (!sv3 || !sv3.SkinViewer) return null;
+    var canvas = $(id);
+    if (!canvas) return null;
+    if (viewers[id]) { viewers[id].dispose(); delete walks[id]; }
+    var dims = viewerDims(canvas, opts);
+    var v = new sv3.SkinViewer({
+      canvas: canvas,
+      width: Math.floor(dims.w * dims.dpr),
+      height: Math.floor(dims.h * dims.dpr),
+      skin: opts.skin || defaultSkin()
+    });
+    applyViewerSize(canvas, v, dims);
+    if (opts.checker) v.background = null;
+    else if (opts.background !== undefined) v.background = opts.background;
+    else v.background = 0x1e1e32;
+    v.fov = 45; v.zoom = opts.zoom != null ? opts.zoom : 0.75;
+    if (opts.cape) v.loadCape(opts.cape);
+    if (opts.autoRotate) v.autoRotate = true;
+    viewers[id] = v;
+    viewerResizeOpts[id] = opts;
+    return v;
+  }
+
+  function resizeAll() {
+    Object.keys(viewers).forEach(function (id) {
+      var c = $(id);
+      if (c && viewers[id]) applyViewerSize(c, viewers[id], viewerDims(c, viewerResizeOpts[id] || {}));
+    });
+  }
+
+  function loadSkinChain(v, urls, model) {
+    if (!v || !urls.length) return Promise.reject(new Error('No skin'));
+    return v.loadSkin(urls[0], { model: model || 'default' }).catch(function () {
+      return loadSkinChain(v, urls.slice(1), model);
+    });
+  }
+
+  function loadCapeChain(v, urls) {
+    if (!v || !urls.length) return Promise.resolve();
+    return v.loadCape(urls[0]).catch(function () {
+      return loadCapeChain(v, urls.slice(1));
+    });
+  }
+
+  function loadProfileSkin(v, p) {
+    var activeSkin = (p.skins || []).filter(function (s) { return s.active; })[0] || (p.skins || [])[0];
+    if (activeSkin) return loadSkinFromEntry(v, activeSkin, p);
+    var uuid = stripUUID(p.uuid);
+    var model = p.slim ? 'slim' : 'default';
+    var urls = [];
+    if (p.skinData) urls.push('data:image/png;base64,' + p.skinData);
+    urls.push(craftSkin(uuid));
+    urls.push('https://mc-heads.net/skin/' + uuid);
+    if (p.skinUrl) urls.push(p.skinUrl);
+    return loadSkinChain(v, urls, model);
+  }
+
+  function loadSkinFromEntry(v, skin, p) {
+    var urls = [];
+    if (skin.textureUrl) urls.push(skin.textureUrl);
+    if (skin.url) urls.push(skin.url);
+    if (!urls.length && skin.hash) urls.push('https://textures.minecraft.net/texture/' + skin.hash);
+    if (!urls.length && p) {
+      var uuid = stripUUID(p.uuid);
+      if (p.skinData) urls.push('data:image/png;base64,' + p.skinData);
+      urls.push(craftSkin(uuid));
+      if (p.skinUrl) urls.push(p.skinUrl);
+    }
+    var model = skin.model === 'slim' ? 'slim' : (skin.model === 'classic' ? 'default' : (p && p.slim ? 'slim' : 'default'));
+    return loadSkinChain(v, urls, model);
+  }
+
+  function getCapeByHash(hash) {
+    buildCapes();
+    for (var i = 0; i < capes.length; i++) {
+      if (capes[i].hash === hash) return capes[i];
+    }
+    return null;
+  }
+
+  function openCapeViewer(hash) {
+    pendingCapeHash = hash;
+    navigateTo('cape-viewer');
+  }
+
+  function applyCapeToViewer(v, cape, labelEl) {
+    if (!v || !cape) return;
+    if (labelEl) labelEl.textContent = 'Preview — ' + cape.name;
+    loadCapeChain(v, [cape.url]);
+    document.querySelectorAll('.cape-card.sel').forEach(function (x) { x.classList.remove('sel'); });
+    document.querySelectorAll('.cape-card[data-hash="' + cape.hash + '"]').forEach(function (x) { x.classList.add('sel'); });
+  }
+
+  function loadProfileCape(v, p) {
+    var fromList = (p.capes || []).filter(function (c) { return c.active; })[0] || (p.capes || [])[0];
+    if (fromList) return loadCapeChain(v, [fromList.url]);
+    if (!p.capeUrl) return Promise.resolve();
+    var hash = textureHash(p.capeUrl);
+    var urls = [];
+    if (hash) urls.push(capeTex(hash));
+    urls.push(p.capeUrl);
+    urls.push(craftCape(stripUUID(p.uuid)));
+    return loadCapeChain(v, urls);
+  }
+
+  function toggleRot(id, btn) {
+    var v = viewers[id]; if (!v) return;
+    v.autoRotate = !v.autoRotate;
+    if (btn) btn.classList.toggle('on', v.autoRotate);
+  }
+
+  function toggleWalk(id, btn) {
+    var v = viewers[id]; if (!v || !sv3) return;
+    if (walks[id]) {
+      v.animation = null; delete walks[id];
+      if (btn) btn.classList.remove('on');
+    } else {
+      walks[id] = new sv3.WalkingAnimation();
+      v.animation = walks[id];
+      if (btn) btn.classList.add('on');
+    }
+  }
+
+  function showPage(name, opts) {
+    opts = opts || {};
+    document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+    var page = $('page-' + name);
+    if (page) page.classList.add('active');
+    document.querySelectorAll('.nav button[data-page]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-page') === name);
+    });
+    $('mainNav').classList.remove('open');
+    var gs = $('globalSearch');
+    if (gs) {
+      gs.style.display = 'block';
+      gs.classList.toggle('compact', name === 'profile');
+    }
+    if (name === 'home') initHome();
+    if (name === 'skin-maker') initMaker();
+    if (name === 'capes') initCapesPage();
+    if (name === 'cape-viewer') initCapeViewer();
+    setTimeout(resizeAll, 100);
+  }
+
+  function fetchProfile(q) {
+    var t = q.trim();
+    if (!t) return Promise.reject(new Error('Enter a username or UUID.'));
+    if (isUUID(t)) {
+      return minetoolsProfile(stripUUID(formatUUID(t))).catch(function () {
+        return ashcon(formatUUID(t), t);
+      });
+    }
+    return playerdbProfile(t).then(function (pdb) {
+      return minetoolsProfile(stripUUID(pdb.uuid)).then(function (mt) {
+        return mergeProfiles(pdb, mt, t);
+      }).catch(function () {
+        return enrichWithAshcon(pdb, t);
+      });
+    }).catch(function () {
+      return ashcon(encodeURIComponent(t), t).then(function (ash) {
+        return finalizeProfile(ash, t);
+      });
+    });
+  }
+
+  function minetoolsProfile(uuid) {
+    return fetch('https://api.minetools.eu/profile/' + uuid).then(function (r) {
+      if (!r.ok) throw new Error('Profile not found.');
+      return r.json();
+    }).then(function (data) {
+      if (!data.decoded) throw new Error('Profile not found.');
+      var d = data.decoded, tex = d.textures || {};
+      return {
+        uuid: formatUUID(d.profileId),
+        name: d.profileName,
+        skinUrl: tex.SKIN ? tex.SKIN.url : null,
+        skinData: null,
+        capeUrl: tex.CAPE ? tex.CAPE.url : null,
+        slim: !!(tex.SKIN && tex.SKIN.metadata && tex.SKIN.metadata.model === 'slim'),
+        usernameHistory: []
+      };
+    });
+  }
+
+  function playerdbProfile(q) {
+    return fetch('https://playerdb.co/api/player/minecraft/' + encodeURIComponent(q)).then(function (r) {
+      if (!r.ok) throw new Error('Player not found.');
+      return r.json();
+    }).then(function (j) {
+      if (!j.data || !j.data.player) throw new Error('Player "' + q + '" not found.');
+      var p = j.data.player, tex = parseProps(p.properties);
+      return {
+        uuid: formatUUID(p.id || p.raw_id),
+        name: p.username,
+        skinUrl: tex.skinUrl || p.skin_texture || null,
+        skinData: null,
+        capeUrl: tex.capeUrl || p.cape_texture || null,
+        slim: tex.slim,
+        usernameHistory: p.name_history || []
+      };
+    });
+  }
+
+  function mergeProfiles(pdb, mt, searched) {
+    var profile = {
+      uuid: mt.uuid || pdb.uuid,
+      name: mt.name || pdb.name || searched,
+      skinUrl: mt.skinUrl || pdb.skinUrl,
+      skinData: null,
+      capeUrl: mt.capeUrl || pdb.capeUrl,
+      slim: typeof mt.slim === 'boolean' ? mt.slim : pdb.slim,
+      usernameHistory: pdb.usernameHistory || []
+    };
+    return ashcon(stripUUID(profile.uuid), searched).then(function (ash) {
+      if (ash.name && ash.name.toLowerCase() !== profile.name.toLowerCase()) {
+        profile.extraNames = [ash.name];
+      }
+      if (ash.usernameHistory && ash.usernameHistory.length) {
+        profile.usernameHistory = profile.usernameHistory.concat(ash.usernameHistory);
+      }
+      return finalizeProfile(profile, searched);
+    }).catch(function () {
+      return finalizeProfile(profile, searched);
+    });
+  }
+
+  function enrichWithAshcon(pdb, searched) {
+    return ashcon(stripUUID(pdb.uuid), searched).then(function (ash) {
+      var extra = [];
+      if (ash.name && ash.name.toLowerCase() !== pdb.name.toLowerCase()) extra.push(ash.name);
+      return finalizeProfile({
+        uuid: pdb.uuid,
+        name: pdb.name || searched,
+        skinUrl: pdb.skinUrl || ash.skinUrl,
+        skinData: ash.skinData,
+        capeUrl: pdb.capeUrl || ash.capeUrl,
+        slim: typeof pdb.slim === 'boolean' ? pdb.slim : ash.slim,
+        usernameHistory: (ash.usernameHistory || []).concat(pdb.usernameHistory || []),
+        extraNames: extra
+      }, searched);
+    }).catch(function () {
+      return finalizeProfile(pdb, searched);
+    });
+  }
+
+  function mcprofilesLookup(q) {
+    var url = '/api/mcprofiles/player/' + encodeURIComponent(q);
+    return fetch(url, { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  function parseMcProfilesCapes(json, activeCapeUrl) {
+    if (!json || !json.data || !json.data.capes || !json.data.capes.length) return [];
+    var activeHash = activeCapeUrl ? textureHash(activeCapeUrl) : null;
+    var seen = {}, list = [];
+    json.data.capes.forEach(function (c) {
+      var hash = c.textureHash || textureHash(c.url);
+      if (!hash || seen[hash]) return;
+      seen[hash] = true;
+      list.push({
+        name: c.knownCapeName || c.knownCapeSlug || 'Cape',
+        url: c.url || capeTex(hash),
+        hash: hash,
+        thumb: capeThumb(hash),
+        active: !!(activeHash && hash === activeHash)
+      });
+    });
+    return list;
+  }
+
+  function buildCapesFromActive(p) {
+    if (!p.capeUrl) return [];
+    var hash = textureHash(p.capeUrl);
+    if (!hash) {
+      return [{ name: 'Equipped Cape', url: p.capeUrl, hash: 'equipped', thumb: craftCape(stripUUID(p.uuid)), active: true }];
+    }
+    return [{ name: 'Equipped Cape', url: capeTex(hash), hash: hash, thumb: capeThumb(hash), active: true }];
+  }
+
+  function parseMcProfilesSkins(mp, p) {
+    if (!mp || !mp.data || !mp.data.skinHistory || !mp.data.skinHistory.length) return [];
+    var activeHash = textureHash(p.skinUrl);
+    return mp.data.skinHistory.map(function (s, i) {
+      var hash = textureHash(s.skinTextureUrl);
+      return {
+        id: hash || ('mp-' + i),
+        hash: hash,
+        url: s.skinTextureUrl,
+        thumb: hash ? ('https://crafthead.net/avatar/texture/' + hash + '/64') : avatarUrl(stripUUID(p.uuid), 64),
+        model: s.modelType === 'slim' ? 'slim' : 'classic',
+        active: !!(activeHash && hash === activeHash),
+        observedAt: s.observedAt || null
+      };
+    });
+  }
+
+  function buildSkinsFromActive(p) {
+    var id = stripUUID(p.uuid);
+    var hash = textureHash(p.skinUrl);
+    return [{
+      id: hash || 'current',
+      hash: hash,
+      url: p.skinUrl || craftSkin(id),
+      thumb: avatarUrl(id, 64),
+      model: p.slim ? 'slim' : 'classic',
+      active: true,
+      observedAt: null
+    }];
+  }
+
+  function namemcSkinsLookup(q) {
+    var url = '/api/namemc/skins/' + encodeURIComponent(q);
+    return fetch(url, { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  function enrichSkins(p, searched) {
+    var q = p.name || searched;
+    return namemcSkinsLookup(q).then(function (nm) {
+      if ((!nm || !nm.skins || !nm.skins.length) && p.uuid) {
+        return namemcSkinsLookup(stripUUID(p.uuid)).then(function (nm2) { return (nm2 && nm2.skins && nm2.skins.length) ? nm2 : nm; });
+      }
+      return nm;
+    }).then(function (nm) {
+      if (nm && nm.skins && nm.skins.length) {
+        p.skins = nm.skins.map(function (s) {
+          return {
+            id: s.id,
+            url: s.textureUrl,
+            textureUrl: s.textureUrl,
+            thumb: s.faceUrl,
+            model: s.model || 'classic',
+            active: !!s.active,
+            observedAt: s.observedAt || null
+          };
+        });
+        return p;
+      }
+      var mpSkins = parseMcProfilesSkins(p._mcprofiles, p);
+      p.skins = mpSkins.length ? mpSkins : buildSkinsFromActive(p);
+      if (p.skins.length && !p.skins.some(function (s) { return s.active; })) p.skins[0].active = true;
+      return p;
+    }).catch(function () {
+      p.skins = buildSkinsFromActive(p);
+      return p;
+    });
+  }
+
+  function enrichCapesFromMcProfiles(p, searched) {
+    return mcprofilesLookup(p.name || searched).then(function (mp) {
+      if ((!mp || !mp.data) && p.uuid) {
+        return mcprofilesLookup(stripUUID(p.uuid)).then(function (mp2) { return mp2 || mp; });
+      }
+      return mp;
+    }).then(function (mp) {
+      p._mcprofiles = mp;
+      var capes = parseMcProfilesCapes(mp, p.capeUrl);
+      if (!capes.length) capes = buildCapesFromActive(p);
+      else if (p.capeUrl && !capes.some(function (c) { return c.active; })) {
+        var h = textureHash(p.capeUrl);
+        if (h && !capes.some(function (c) { return c.hash === h; })) {
+          capes.unshift({ name: 'Equipped Cape', url: capeTex(h), hash: h, thumb: capeThumb(h), active: true });
+        } else if (h) {
+          capes.forEach(function (c) { c.active = c.hash === h; });
+        }
+      } else if (!p.capeUrl && capes.length) {
+        capes[0].active = true;
+      }
+      p.capes = capes;
+      return p;
+    }).catch(function () {
+      p.capes = buildCapesFromActive(p);
+      return p;
+    });
+  }
+
+  function renderProfileSkins(p) {
+    var skins = p.skins || buildSkinsFromActive(p);
+    $('skinHistCount').textContent = '(' + skins.length + ')';
+    if (!skins.length) {
+      $('skinHistory').innerHTML = '<p class="no-capes">No skins found.</p>';
+      return;
+    }
+    $('skinHistory').innerHTML = skins.map(function (s, i) {
+      var title = s.observedAt ? new Date(s.observedAt).toLocaleString() : (s.id || 'Skin');
+      return '<button type="button" class="nm-skin-item' + (s.active ? ' active' : '') + '" data-skin-idx="' + i + '" title="' + title.replace(/"/g, '&quot;') + '" aria-label="Skin ' + (i + 1) + '">' +
+        '<img src="' + (s.thumb || s.faceUrl || avatarUrl(stripUUID(p.uuid), 64)) + '" alt="Skin" loading="lazy" onerror="this.src=\'https://mc-heads.net/avatar/' + stripUUID(p.uuid) + '/64\'">' +
+        '</button>';
+    }).join('');
+    $('skinHistory').onclick = function (e) {
+      var item = e.target.closest('.nm-skin-item');
+      if (!item || !currentProfile || !currentProfile.skins) return;
+      var skin = currentProfile.skins[parseInt(item.getAttribute('data-skin-idx'), 10)];
+      if (!skin) return;
+      document.querySelectorAll('#skinHistory .nm-skin-item').forEach(function (el) { el.classList.remove('active'); });
+      item.classList.add('active');
+      currentProfile.skins.forEach(function (s) { s.active = s.id === skin.id; });
+      var v = viewers.profileCanvas;
+      if (v) loadSkinFromEntry(v, skin, currentProfile);
+    };
+  }
+
+  function renderProfileCapes(p) {
+    var capes = p.capes || buildCapesFromActive(p);
+    $('capeCount').textContent = '(' + capes.length + ')';
+    if (!capes.length) {
+      $('capeList').innerHTML = '<p class="no-capes">No capes found.</p>';
+      return;
+    }
+    $('capeList').innerHTML = '<div class="nm-cape-grid">' + capes.map(function (c, i) {
+      return '<button type="button" class="nm-cape-item' + (c.active ? ' active' : '') + '" data-cape-idx="' + i + '" title="' + c.name.replace(/"/g, '&quot;') + '" aria-label="' + c.name.replace(/"/g, '&quot;') + '">' +
+        '<img src="' + c.thumb + '" alt="' + c.name.replace(/"/g, '&quot;') + '" loading="lazy" onerror="this.src=\'' + c.url + '\'">' +
+        '</button>';
+    }).join('') + '</div>';
+    $('capeList').onclick = function (e) {
+      var item = e.target.closest('.nm-cape-item');
+      if (!item || !currentProfile || !currentProfile.capes) return;
+      var cape = currentProfile.capes[parseInt(item.getAttribute('data-cape-idx'), 10)];
+      if (!cape) return;
+      document.querySelectorAll('#capeList .nm-cape-item').forEach(function (el) { el.classList.remove('active'); });
+      item.classList.add('active');
+      currentProfile.capes.forEach(function (c) { c.active = c.hash === cape.hash; });
+      var v = viewers.profileCanvas;
+      if (v) loadCapeChain(v, [cape.url]);
+    };
+  }
+
+  function finalizeProfile(p, searched) {
+    p.nameHistory = buildNameHistory(p);
+    return enrichCapesFromMcProfiles(p, searched).then(function (profile) {
+      return enrichSkins(profile, searched);
+    });
+  }
+
+  function ashcon(id, orig) {
+    return fetch('https://api.ashcon.app/mojang/v2/user/' + id).then(function (r) {
+      if (r.status === 404) throw new Error('Player "' + orig + '" not found.');
+      if (!r.ok) throw new Error('API error (' + r.status + ').');
+      return r.json();
+    }).then(function (d) {
+      if (!d || !d.uuid) throw new Error('Player "' + orig + '" not found.');
+      return {
+        uuid: d.uuid, name: d.username,
+        skinUrl: d.textures && d.textures.skin ? d.textures.skin.url : null,
+        skinData: d.textures && d.textures.skin ? d.textures.skin.data : null,
+        capeUrl: d.textures && d.textures.cape ? d.textures.cape.url : null,
+        slim: !!(d.textures && d.textures.slim),
+        usernameHistory: d.username_history || []
+      };
+    });
+  }
+
+  var suspendedCache = null;
+  var suspendedLoadedAt = 0;
+  var SUSPENDED_TTL = 60000;
+
+  function loadSuspendedList() {
+    var now = Date.now();
+    if (suspendedCache !== null && now - suspendedLoadedAt < SUSPENDED_TTL) {
+      return Promise.resolve(suspendedCache);
+    }
+    return fetch('/suspended.txt', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (text) {
+        var list = [];
+        (text || '').split(/\r?\n/).forEach(function (line) {
+          line = line.trim();
+          if (!line || line.charAt(0) === '#') return;
+          list.push(line.toLowerCase());
+        });
+        suspendedCache = list;
+        suspendedLoadedAt = Date.now();
+        return list;
+      })
+      .catch(function () {
+        suspendedCache = [];
+        suspendedLoadedAt = Date.now();
+        return [];
+      });
+  }
+
+  function isSuspendedName(name, list) {
+    if (!name || !list || !list.length) return false;
+    return list.indexOf(name.trim().toLowerCase()) !== -1;
+  }
+
+  function profileIsSuspended(profile, list) {
+    if (!list || !list.length) return false;
+    var names = [profile.name];
+    (profile.nameHistory || []).forEach(function (entry) {
+      if (entry.username) names.push(entry.username);
+    });
+    return names.some(function (n) { return isSuspendedName(n, list); });
+  }
+
+  function applyProfileStatus(suspended) {
+    var el = $('pStatus');
+    if (!el) return;
+    if (suspended) {
+      el.textContent = 'Suspended';
+      el.className = 'badge red';
+    } else {
+      el.textContent = 'Active';
+      el.className = 'badge green';
+    }
+  }
+
+  function updateProfileSuspendBanner(profile) {
+    var banner = $('profileSuspend');
+    if (banner) banner.hidden = true;
+    applyProfileStatus(false);
+    return loadSuspendedList().then(function (list) {
+      var suspended = profileIsSuspended(profile, list);
+      if (banner) banner.hidden = !suspended;
+      applyProfileStatus(suspended);
+    });
+  }
+
+  function searchPlayer(q, opts) {
+    opts = opts || {};
+    var t = q.trim();
+    if (!t) return;
+    if (!opts.skipHistory) {
+      if (location.protocol === 'file:') {
+        location.hash = '#/profile/' + encodeURIComponent(t);
+      } else {
+        history.pushState({ page: 'profile', user: t }, '', profilePath(t));
+      }
+    }
+    showPage('profile', { skipHistory: true });
+    $('profileLoading').hidden = false;
+    $('profileError').hidden = true;
+    $('profileContent').hidden = true;
+    if ($('profileSuspend')) $('profileSuspend').hidden = true;
+    applyProfileStatus(false);
+    if (location.protocol === 'file:') $('fileWarn').hidden = false;
+    setPageTitle('profile', t);
+
+    fetchProfile(t).then(function (p) {
+      currentProfile = p;
+      var count = bumpCount(p.uuid);
+      if (!opts.skipHistory && location.protocol !== 'file:') {
+        history.replaceState({ page: 'profile', user: p.name }, '', profilePath(p.name));
+      }
+      setPageTitle('profile', p.name);
+      return showProfile(p, count);
+    }).then(function () {
+      $('profileLoading').hidden = true;
+      $('profileContent').hidden = false;
+    }).catch(function (e) {
+      $('profileLoading').hidden = true;
+      $('profileError').hidden = false;
+      $('errorMsg').textContent = e.message || 'Unknown error.';
+    });
+  }
+
+  function showProfile(p, count) {
+    var id = stripUUID(p.uuid);
+    updateProfileSuspendBanner(p);
+    $('pNameBig').textContent = p.name;
+    $('pUuid').textContent = p.uuid;
+    $('pViews').textContent = count + ' / month';
+    $('pModel').textContent = p.slim ? 'Alex (Slim)' : 'Steve (Classic)';
+    $('globalSearchInput').value = p.name;
+    $('headCmd').value = '/give @p minecraft:player_head{SkullOwner:"' + p.name + '"}';
+
+    renderProfileSkins(p);
+
+    $('dlSkin').onclick = function (e) {
+      e.preventDefault();
+      var activeSkin = (p.skins || []).filter(function (s) { return s.active; })[0] || (p.skins || [])[0];
+      var skinSrc = activeSkin ? (activeSkin.url || activeSkin.textureUrl) : (p.skinData ? ('data:image/png;base64,' + p.skinData) : craftSkin(id));
+      var a = document.createElement('a');
+      a.href = skinSrc; a.download = p.name + '.png'; a.click();
+    };
+
+    renderProfileCapes(p);
+
+    var hist = p.nameHistory || buildNameHistory(p);
+    $('nameHistory').innerHTML = hist.map(function (entry) {
+      var dateStr = entry.current ? '—' : formatHistDate(entry.changedAt);
+      var ageStr = entry.current ? '—' : formatHistAge(entry.changedAt);
+      return '<tr>' +
+        '<td><span class="hist-name">' + entry.username + '</span>' + (entry.current ? ' <span class="hist-cur">Current</span>' : '') + '</td>' +
+        '<td>' + dateStr + '</td>' +
+        '<td>' + ageStr + '</td>' +
+        '<td>' + (entry.current ? '' : '<button type="button" class="nm-copy-link" data-copy-name="' + entry.username + '">Copy</button>') + '</td>' +
+        '</tr>';
+    }).join('');
+
+    $('nameHistory').querySelectorAll('[data-copy-name]').forEach(function (btn) {
+      btn.addEventListener('click', function () { copyText(btn.getAttribute('data-copy-name')); });
+    });
+
+    var uid = stripUUID(p.uuid);
+    $('apiBtns').innerHTML =
+      '<a href="https://api.mojang.com/users/profiles/minecraft/' + encodeURIComponent(p.name) + '" target="_blank" rel="noopener">Legacy Name Profile</a>' +
+      '<a href="https://sessionserver.mojang.com/session/minecraft/profile/' + uid + '" target="_blank" rel="noopener">UUID Profile</a>' +
+      '<a href="https://api.mojang.com/users/profiles/minecraft/' + encodeURIComponent(p.name) + '" target="_blank" rel="noopener">Name Profile</a>' +
+      '<a href="https://api.ashcon.app/mojang/v2/user/' + uid + '" target="_blank" rel="noopener">User Profile</a>';
+
+    var v = makeViewer('profileCanvas', viewerOpts());
+    if (v) {
+      return loadProfileSkin(v, p).then(function () {
+        return loadProfileCape(v, p);
+      }).then(function () {
+        if (sv3.IdleAnimation) v.animation = new sv3.IdleAnimation();
+      });
+    }
+    return Promise.resolve();
+  }
+
+  var homeReady = false;
+  function initHome() {
+    if (homeReady) return;
+    homeReady = true;
+    $('trendingSkins').innerHTML = TRENDING.map(function (s) {
+      return '<div class="nm-skin-card" data-name="' + s.name + '">' +
+        '<div class="nm-skin-head"><span class="nm-skin-rank">#' + s.rank + '</span><span class="nm-skin-name">' + s.name + '</span></div>' +
+        '<div class="nm-skin-body"><img src="' + bodyRender(s.name) + '" alt="' + s.name + '" loading="lazy" onerror="this.src=\'' + bodyUrl(s.name, 120) + '\'"></div>' +
+        '<div class="nm-skin-foot"><span>' + s.age + '</span><span class="stars">' + s.stars + '★</span></div></div>';
+    }).join('');
+    $('trendingSkins').onclick = function (e) {
+      var card = e.target.closest('.nm-skin-card');
+      if (card) searchPlayer(card.getAttribute('data-name'));
+    };
+    $('serverList').innerHTML = SERVERS.map(function (s) {
+      var hostHtml = s.host ? '<span class="nm-server-host">' + s.host + '</span>' : '';
+      return '<div class="nm-server-row' + (s.featured ? ' featured' : '') + '" data-host="' + (s.host || '') + '">' +
+        '<div class="nm-server-rank">#' + s.rank + '</div>' +
+        '<div style="font-size:1.1rem;text-align:center">' + s.flag + '</div>' +
+        '<div><span class="nm-server-name">' + s.name + '</span>' + hostHtml + '<div class="nm-server-desc">' + s.desc + '</div></div>' +
+        '<div class="nm-server-players">' + s.players + '</div>' +
+        '<div class="nm-server-votes">' + s.votes.toLocaleString() + '♥</div></div>';
+    }).join('');
+    $('serverList').onclick = function (e) {
+      var row = e.target.closest('.nm-server-row');
+      if (!row) return;
+      var host = row.getAttribute('data-host');
+      if (host) {
+        copyText(host);
+        toast('Copied ' + host);
+      }
+    };
+    $('skinsContinue').onclick = function (e) { e.preventDefault(); navigateTo('capes'); };
+    $('serversContinue').onclick = function (e) { e.preventDefault(); toast('Server listings coming soon'); };
+    if (localStorage.getItem('noteClosed') === '1') $('noteBanner').classList.add('hidden');
+    $('noteClose').onclick = function () {
+      $('noteBanner').classList.add('hidden');
+      localStorage.setItem('noteClosed', '1');
+    };
+  }
+
+  var makerReady = false, makerViewer = null, faceCtx = null, updateTimer = null;
+
+  function drawSteveTemplate(ctx) {
+    var sk = '#c6a87a', sh = '#3b82f6', pa = '#1e3a5f';
+    function f(x,y,w,h,c) { ctx.fillStyle = c; ctx.fillRect(x,y,w,h); }
+    Object.keys(UV).forEach(function (part) {
+      Object.keys(UV[part]).forEach(function (face) {
+        var r = UV[part][face]; f(r[0],r[1],r[2],r[3],sk);
+      });
+    });
+    [[20,20,8,12,sh],[16,20,4,12,sh],[28,20,4,12,sh],[20,16,8,4,sh],[32,20,8,12,sh]].forEach(function (a) { f(a[0],a[1],a[2],a[3],a[4]); });
+    [[20,52,4,12,pa],[24,52,4,12,pa],[28,52,4,12,pa],[16,52,4,12,pa],[4,52,4,12,pa],[0,52,4,12,pa],[8,52,4,12,pa],[12,52,4,12,pa]].forEach(function (a) { f(a[0],a[1],a[2],a[3],a[4]); });
+  }
+
+  function syncFaceEditor() {
+    if (!skinCtx || !faceCtx) return;
+    var r = UV[currentPart][currentFace];
+    var fc = $('faceCanvas');
+    faceCtx.clearRect(0, 0, fc.width, fc.height);
+    faceCtx.imageSmoothingEnabled = false;
+    faceCtx.drawImage(skinCanvas, r[0], r[1], r[2], r[3], 0, 0, fc.width, fc.height);
+    $('editLabel').textContent = 'Editing: ' + currentPart + ' — ' + currentFace;
+    var mini = $('miniSkin').getContext('2d');
+    mini.clearRect(0, 0, 64, 64);
+    mini.drawImage(skinCanvas, 0, 0);
+  }
+
+  function syncMaker3D() {
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(function () {
+      if (makerViewer) makerViewer.loadSkin(skinCanvas.toDataURL('image/png'), { model: 'default' });
+    }, 60);
+  }
+
+  function loadSteveOntoCanvas(ctx, done) {
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function () {
+      ctx.clearRect(0, 0, 64, 64);
+      ctx.drawImage(img, 0, 0, 64, 64);
+      if (done) done();
+    };
+    img.onerror = function () {
+      drawSteveTemplate(ctx);
+      if (done) done();
+    };
+    img.src = defaultSkin();
+  }
+
+  function initMakerViewer3D() {
+    var steveDataUrl = skinCanvas.toDataURL('image/png');
+    makerViewer = makeViewer('makerCanvas', {
+      autoRotate: true,
+      zoom: 0.9,
+      ratio: 1.05,
+      minWidth: 220,
+      checker: true,
+      skin: steveDataUrl
+    });
+    if (!makerViewer) return;
+    makerViewer.loadSkin(steveDataUrl, { model: 'default' });
+    if (sv3 && sv3.WalkingAnimation) {
+      makerViewer.animation = new sv3.WalkingAnimation();
+      walks.makerCanvas = true;
+    }
+  }
+
+  function initMaker() {
+    if (!makerReady) {
+      makerReady = true;
+      skinCanvas = document.createElement('canvas');
+      skinCanvas.width = 64; skinCanvas.height = 64;
+      skinCtx = skinCanvas.getContext('2d');
+      faceCtx = $('faceCanvas').getContext('2d');
+      loadSteveOntoCanvas(skinCtx, function () {
+        initMakerViewer3D();
+        syncFaceEditor();
+      });
+
+      $('bodyParts').addEventListener('click', function (e) {
+        var b = e.target.closest('.sel-btn'); if (!b) return;
+        currentPart = b.getAttribute('data-part');
+        document.querySelectorAll('#bodyParts .sel-btn').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active'); syncFaceEditor();
+      });
+      $('faces').addEventListener('click', function (e) {
+        var b = e.target.closest('.sel-btn'); if (!b) return;
+        currentFace = b.getAttribute('data-face');
+        document.querySelectorAll('#faces .sel-btn').forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active'); syncFaceEditor();
+      });
+      document.querySelectorAll('.tool-btn[data-tool]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          currentTool = b.getAttribute('data-tool');
+          document.querySelectorAll('.tool-btn[data-tool]').forEach(function (x) { x.classList.remove('active'); });
+          b.classList.add('active');
+        });
+      });
+      $('mkColor').addEventListener('input', function (e) { paintColor = e.target.value; });
+      $('mkReset').addEventListener('click', function () {
+        loadSteveOntoCanvas(skinCtx, function () { syncFaceEditor(); syncMaker3D(); });
+      });
+      $('mkSave').addEventListener('click', function () {
+        var a = document.createElement('a'); a.download = 'skin.png';
+        a.href = skinCanvas.toDataURL('image/png'); a.click(); toast('Saved!');
+      });
+      $('mkImport').addEventListener('click', function () { $('mkImportFile').click(); });
+      $('mkImportFile').addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0]; if (!f) return;
+        var r = new FileReader();
+        r.onload = function (ev) {
+          var img = new Image();
+          img.onload = function () { skinCtx.clearRect(0,0,64,64); skinCtx.drawImage(img,0,0,64,64); syncFaceEditor(); syncMaker3D(); };
+          img.src = ev.target.result;
+        }; r.readAsDataURL(f);
+      });
+
+      var painting = false;
+      function paint(e) {
+        var fc = $('faceCanvas'), rect = fc.getBoundingClientRect();
+        var fx = Math.floor((e.clientX - rect.left) * (fc.width / rect.width));
+        var fy = Math.floor((e.clientY - rect.top) * (fc.height / rect.height));
+        var r = UV[currentPart][currentFace];
+        var rx = r[0] + Math.floor(fx / fc.width * r[2]);
+        var ry = r[1] + Math.floor(fy / fc.height * r[3]);
+        if (currentTool === 'fill') { skinCtx.fillStyle = paintColor; skinCtx.fillRect(r[0], r[1], r[2], r[3]); }
+        else if (currentTool === 'eraser') { skinCtx.clearRect(rx, ry, 1, 1); }
+        else { skinCtx.fillStyle = paintColor; skinCtx.fillRect(rx, ry, 1, 1); }
+        syncFaceEditor(); syncMaker3D();
+      }
+      $('faceCanvas').addEventListener('mousedown', function (e) { painting = true; paint(e); });
+      $('faceCanvas').addEventListener('mousemove', function (e) { if (painting) paint(e); });
+      $('faceCanvas').addEventListener('mouseup', function () { painting = false; });
+      $('faceCanvas').addEventListener('mouseleave', function () { painting = false; });
+      $('mkRotate').addEventListener('click', function () { toggleRot('makerCanvas', $('mkRotate')); });
+      $('mkWalk').addEventListener('click', function () { toggleWalk('makerCanvas', $('mkWalk')); });
+    } else { resizeAll(); }
+  }
+
+  function capeCardHtml(c, selected) {
+    return '<div class="cape-card' + (selected ? ' sel' : '') + '" data-hash="' + c.hash + '" data-name="' + c.name + '" title="' + c.name + '">' +
+      '<img src="' + c.thumb + '" alt="' + c.name + '" loading="lazy">' +
+      '<span class="cape-label">' + c.name + '</span></div>';
+  }
+
+  function initCapesPage() {
+    buildCapes();
+    $('capesPageGrid').innerHTML = capes.map(function (c) { return capeCardHtml(c, false); }).join('');
+    $('capesPageGrid').onclick = function (e) {
+      var card = e.target.closest('.cape-card');
+      if (!card) return;
+      openCapeViewer(card.getAttribute('data-hash'));
+    };
+  }
+
+  var cvReady = false, cvViewer = null, cvActiveHash = null, cvSteveReady = false;
+  function renderCvGrid(filter) {
+    buildCapes();
+    var list = capes.filter(function (c) { return c.name.toLowerCase().indexOf((filter || '').toLowerCase()) !== -1; });
+    var active = cvActiveHash || (list[0] && list[0].hash);
+    $('cvCapeGrid').innerHTML = list.map(function (c) { return capeCardHtml(c, c.hash === active); }).join('');
+    $('cvCount').textContent = list.length + ' official capes available.';
+    $('cvCapeGrid').onclick = function (e) {
+      var card = e.target.closest('.cape-card');
+      if (!card) return;
+      var cape = getCapeByHash(card.getAttribute('data-hash'));
+      if (!cape) return;
+      cvActiveHash = cape.hash;
+      applyCapeToViewer(cvViewer, cape, $('cvPreviewLabel'));
+    };
+  }
+
+  function initCapeViewer() {
+    buildCapes();
+    var startHash = pendingCapeHash || cvActiveHash || capes[0].hash;
+    pendingCapeHash = null;
+    cvActiveHash = startHash;
+    var startCape = getCapeByHash(startHash) || capes[0];
+    if (!cvReady) {
+      cvReady = true;
+      cvViewer = makeViewer('cvCanvas', viewerOpts());
+      if (cvViewer) {
+        loadDefaultSteve(cvViewer).then(function () {
+          cvSteveReady = true;
+          applyCapeToViewer(cvViewer, startCape, $('cvPreviewLabel'));
+        }).catch(function () {
+          applyCapeToViewer(cvViewer, startCape, $('cvPreviewLabel'));
+        });
+      }
+      renderCvGrid();
+      $('cvFilter').addEventListener('input', function (e) { renderCvGrid(e.target.value); });
+      $('cvLoad').addEventListener('click', function () {
+        var q = $('cvPlayer').value.trim();
+        if (!q) return toast('Enter a name');
+        fetchProfile(q).then(function (p) {
+          return loadProfileSkin(cvViewer, p).then(function () {
+            return loadProfileCape(cvViewer, p);
+          }).then(function () {
+            $('cvPreviewLabel').textContent = 'Preview — ' + p.name;
+            toast('Loaded ' + p.name);
+          });
+        }).catch(function (e) { toast(e.message); });
+      });
+      $('cvImportSkin').addEventListener('click', function () { $('cvSkinFile').click(); });
+      $('cvImportCape').addEventListener('click', function () { $('cvCapeFile').click(); });
+      $('cvSkinFile').addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0]; if (!f || !cvViewer) return;
+        var r = new FileReader(); r.onload = function (ev) { cvViewer.loadSkin(ev.target.result); }; r.readAsDataURL(f);
+      });
+      $('cvCapeFile').addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0]; if (!f || !cvViewer) return;
+        var r = new FileReader(); r.onload = function (ev) { cvViewer.loadCape(ev.target.result); }; r.readAsDataURL(f);
+      });
+      $('cvClear').addEventListener('click', function () {
+        if (cvViewer) {
+          loadDefaultSteve(cvViewer).then(function () {
+            cvActiveHash = capes[0].hash;
+            applyCapeToViewer(cvViewer, capes[0], $('cvPreviewLabel'));
+            renderCvGrid($('cvFilter').value);
+            toast('Cleared');
+          });
+        }
+      });
+      $('cvRotate').addEventListener('click', function () { toggleRot('cvCanvas', $('cvRotate')); });
+      $('cvWalk').addEventListener('click', function () { toggleWalk('cvCanvas', $('cvWalk')); });
+    } else {
+      renderCvGrid($('cvFilter').value);
+      if (cvViewer && startCape) {
+        var applyStartCape = function () { applyCapeToViewer(cvViewer, startCape, $('cvPreviewLabel')); };
+        if (!cvSteveReady) {
+          loadDefaultSteve(cvViewer).then(function () {
+            cvSteveReady = true;
+            applyStartCape();
+          }).catch(applyStartCape);
+        } else {
+          applyStartCape();
+        }
+      }
+      resizeAll();
+    }
+  }
+
+  function initAuth() {
+    var overlay = $('authOverlay');
+    var authModal = $('authModal');
+    var lastStep = $('lastStepModal');
+    var authTab = 'signup';
+    var DISCORD = 'https://discord.gg/minecraftserver';
+
+    function resetAuth() {
+      authModal.classList.remove('hidden');
+      lastStep.classList.add('hidden');
+      $('authForm').reset();
+      setAuthTab('signup');
+    }
+
+    function openAuth() {
+      resetAuth();
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuth() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function setAuthTab(tab) {
+      authTab = tab;
+      document.querySelectorAll('.auth-tab').forEach(function (t) {
+        t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+      });
+      $('authTitle').textContent = tab === 'signup' ? 'Create your account' : 'Log in to your account';
+      $('authSubmit').textContent = tab === 'signup' ? 'Sign Up' : 'Log In';
+      $('authDiscordText').textContent = tab === 'signup' ? 'Sign up with Discord' : 'Log in with Discord';
+      $('authCheckWrap').style.display = tab === 'signup' ? 'flex' : 'none';
+    }
+
+    $('loginBtn').addEventListener('click', openAuth);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeAuth(); });
+    document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
+      btn.addEventListener('click', closeAuth);
+    });
+    document.querySelectorAll('.auth-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () { setAuthTab(tab.getAttribute('data-tab')); });
+    });
+    $('authForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = $('authEmail').value.trim();
+      var pass = $('authPassword').value;
+      if (!email || !pass) { toast('Enter email and password'); return; }
+      if (authTab === 'signup') {
+        if (!$('authAgree').checked) { toast('Please agree to the Terms of Service'); return; }
+        authModal.classList.add('hidden');
+        lastStep.classList.remove('hidden');
+        return;
+      }
+      toast('Logged in — continue on Discord');
+      window.open(DISCORD, '_blank');
+      closeAuth();
+    });
+    $('lastNext').addEventListener('click', function () {
+      window.open(DISCORD, '_blank');
+      closeAuth();
+    });
+  }
+
+  /* Events */
+  $('globalSearchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    searchPlayer($('globalSearchInput').value);
+  });
+  $('logoBtn').addEventListener('click', function (e) { e.preventDefault(); navigateTo('home'); });
+  $('footerLogo').addEventListener('click', function (e) { e.preventDefault(); navigateTo('home'); });
+  $('errorHomeBtn').addEventListener('click', function () { navigateTo('home'); });
+  $('copyUuid').addEventListener('click', function () { if (currentProfile) { copyText(currentProfile.uuid); toast('UUID copied'); } });
+  $('copyCmd').addEventListener('click', function () { copyText($('headCmd').value); });
+  $('pRotate').addEventListener('click', function () { toggleRot('profileCanvas', $('pRotate')); });
+  $('pWalk').addEventListener('click', function () { toggleWalk('profileCanvas', $('pWalk')); });
+
+  document.querySelectorAll('.nav button[data-page]').forEach(function (b) {
+    b.addEventListener('click', function () { navigateTo(b.getAttribute('data-page')); });
+  });
+  document.querySelectorAll('[data-nav]').forEach(function (a) {
+    a.addEventListener('click', function (e) { e.preventDefault(); navigateTo(a.getAttribute('data-nav')); });
+  });
+  $('menuBtn').addEventListener('click', function () { $('mainNav').classList.toggle('open'); });
+  window.addEventListener('resize', resizeAll);
+  window.addEventListener('popstate', handleRoute);
+
+  if (location.protocol === 'file:') {
+    var w = document.createElement('div');
+    w.className = 'file-warn';
+    w.innerHTML = '⚠ <strong>Do not open this file directly.</strong> Run <code>START.bat</code> then open <a href="http://localhost:3000" style="color:var(--accent-bright)">http://localhost:3000</a>';
+    document.querySelector('.search-section').prepend(w);
+  }
+
+  initHome();
+  initAuth();
+  handleRoute();
+  console.log('MCSearch ready', sv3 ? '(3D OK)' : '(3D lib loading...)');
+})();
+</script>
+</body>
+</html>

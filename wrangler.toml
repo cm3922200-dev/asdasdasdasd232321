@@ -1,0 +1,6 @@
+name = "sparkling-limit-0ffc"
+compatibility_date = "2024-06-01"
+
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
