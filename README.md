@@ -1,4 +1,4 @@
-# mclookup — static site for Cloudflare
+# MCLookup — static site (mclookup.xyz)
 
 Upload **all files in this folder** to your GitHub repo root.
 

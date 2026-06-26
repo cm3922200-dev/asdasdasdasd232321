@@ -1,4 +1,4 @@
-# MCSearch suspended usernames — one per line (case-insensitive).
+# MCLookup suspended usernames — one per line (case-insensitive).
 # Lines starting with # are ignored.
 # Upload this file to your site root (same folder as index.html).
 # Example:
