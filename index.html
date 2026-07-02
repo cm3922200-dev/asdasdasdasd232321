@@ -1683,12 +1683,19 @@
   function initHome() {
     if (homeReady) return;
     homeReady = true;
-    $('trendingSkins').innerHTML = TRENDING.map(function (s) {
-      return '<div class="nm-skin-card" data-name="' + s.name + '">' +
-        '<div class="nm-skin-head"><span class="nm-skin-rank">#' + s.rank + '</span><span class="nm-skin-name">' + s.name + '</span></div>' +
-        '<div class="nm-skin-body"><img src="' + bodyRender(s.name) + '" alt="' + s.name + '" loading="lazy" onerror="this.src=\'' + bodyUrl(s.name, 120) + '\'"></div>' +
-        '<div class="nm-skin-foot"><span>' + s.age + '</span><span class="stars">' + s.stars + '★</span></div></div>';
-    }).join('');
+    loadSuspendedList().then(function (list) {
+      var trending = TRENDING.filter(function (s) {
+        return !isSuspendedName(s.name, list);
+      }).map(function (s, i) {
+        return { name: s.name, rank: i + 1, age: s.age, stars: s.stars };
+      });
+      $('trendingSkins').innerHTML = trending.map(function (s) {
+        return '<div class="nm-skin-card" data-name="' + s.name + '">' +
+          '<div class="nm-skin-head"><span class="nm-skin-rank">#' + s.rank + '</span><span class="nm-skin-name">' + s.name + '</span></div>' +
+          '<div class="nm-skin-body"><img src="' + bodyRender(s.name) + '" alt="' + s.name + '" loading="lazy" onerror="this.src=\'' + bodyUrl(s.name, 120) + '\'"></div>' +
+          '<div class="nm-skin-foot"><span>' + s.age + '</span><span class="stars">' + s.stars + '★</span></div></div>';
+      }).join('');
+    });
     $('trendingSkins').onclick = function (e) {
       var card = e.target.closest('.nm-skin-card');
       if (card) searchPlayer(card.getAttribute('data-name'));
