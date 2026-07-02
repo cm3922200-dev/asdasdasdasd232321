@@ -1539,7 +1539,6 @@ CaptainCharcat
 CaptainCrow_
 CaptainJared
 CaptainPhresh
-CaptainSparklez
 CaptainTenInch
 Captainvladi
 Captaivian
@@ -2569,7 +2568,6 @@ DingoMemes
 Dingouh
 Dinkydew2002
 DiNmiTe
-Dinnerbone
 dinocoaster007
 DinosaurDan
 dintmeister
@@ -3939,7 +3937,6 @@ grendel03
 Greyhound1986
 GreyPilgrim3
 greyvance
-Grian
 Gridlock500
 GrieferDen
 GrievousDu38
@@ -3969,7 +3966,6 @@ GRrazZLle
 GrrBarkWooF
 Grrizzo
 Grufdragon
-Grumm
 gruncalAl
 Gruntygru
 grvbynabramke
@@ -7334,7 +7330,6 @@ NotaSF
 NotAWalrus
 NotAWorm
 notblackjack
-Notch
 Notchos
 NotDriplex
 Note_To_Self
