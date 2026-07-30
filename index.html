@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCLookup — Minecraft Profile Search</title>
+  <script>
+    /* Applied before first paint so a saved light theme never flashes dark. */
+    (function () {
+      var t = 'dark';
+      try { t = localStorage.getItem('theme') === 'light' ? 'light' : 'dark'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <link rel="icon" href="/creeper-logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -399,6 +407,9 @@
       --lift:0 24px 60px -34px rgba(0,0,0,.95);
       --glow-accent:0 10px 30px -12px rgba(74,222,128,.55);
       --radius-2xl:24px;
+      --accent-text:#93f2b1;
+      --text-strong:#fff;
+      color-scheme:dark;
     }
     body{background:var(--bg);letter-spacing:-.005em}
     body::before{
@@ -435,9 +446,9 @@
     .brand-accent{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav{background:var(--glass);border-color:var(--hairline);backdrop-filter:blur(14px)}
     .nav a,.nav button{transition:color .25s var(--ease),background .25s var(--ease),box-shadow .25s var(--ease)}
-    .nav a:hover,.nav button:hover{background:var(--glass-2);color:#fff}
+    .nav a:hover,.nav button:hover{background:var(--glass-2);color:var(--text-strong)}
     .nav a.active,.nav button.active{
-      background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,211,238,.1));color:#93f2b1;
+      background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,211,238,.1));color:var(--accent-text);
       box-shadow:inset 0 0 0 1px rgba(74,222,128,.26),0 6px 18px -10px rgba(74,222,128,.7)
     }
     .icon-btn{background:var(--glass);border-color:var(--hairline);backdrop-filter:blur(12px)}
@@ -526,7 +537,7 @@
       font-size:.5625rem;font-weight:700;letter-spacing:.09em;color:var(--text-3);
       opacity:0;transition:opacity .4s var(--ease);pointer-events:none
     }
-    .nm-skin-card.is3d .tskin-badge{opacity:1;color:#93f2b1;border-color:rgba(74,222,128,.3)}
+    .nm-skin-card.is3d .tskin-badge{opacity:1;color:var(--accent-text);border-color:rgba(74,222,128,.3)}
     .nm-skin-card.pending .nm-skin-body::before{
       content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
       background:linear-gradient(100deg,transparent 22%,rgba(255,255,255,.055) 46%,transparent 68%);
@@ -548,7 +559,7 @@
     /* SIDEBAR POST */
     .nm-post-card{border-color:rgba(74,222,128,.2)}
     .nm-post-card::before{background:var(--grad-accent)}
-    .nm-post-badge{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.28);color:#93f2b1}
+    .nm-post-badge{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.28);color:var(--accent-text)}
 
     /* MISC CONTROLS */
     .sel-btn,.tool-btn,.btn-row button,.copy-btn,.api-btns a,.field-row input,.head-cmd input,.head-row select{
@@ -585,10 +596,10 @@
       filter:blur(9px);pointer-events:none
     }
     .vtool,.nm-viewer-play{background:rgba(6,9,7,.6);border-color:var(--hairline);backdrop-filter:blur(12px)}
-    .vtool.on,.nm-viewer-play.on{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.3);color:#93f2b1}
+    .vtool.on,.nm-viewer-play.on{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.3);color:var(--accent-text)}
 
     /* HOME STATS */
-    .home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem}
+    .home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:2rem}
     .stat-tile{
       display:flex;flex-direction:column;gap:.2rem;padding:1rem 1.15rem;border-radius:var(--radius-lg);
       background:var(--card-fill);border:1px solid var(--hairline);backdrop-filter:blur(14px)
@@ -612,7 +623,7 @@
     .tool-ico{
       width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
       background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));
-      border:1px solid rgba(74,222,128,.24);color:#93f2b1
+      border:1px solid rgba(74,222,128,.24);color:var(--accent-text)
     }
     .tool-ico svg{width:19px;height:19px}
     .tool-name{font-size:.9375rem;font-weight:600;letter-spacing:-.02em}
@@ -647,7 +658,7 @@
       border:1px solid var(--hairline);color:var(--text-2);font-size:.75rem;font-weight:500;
       transition:border-color .25s var(--ease),color .25s var(--ease)
     }
-    .pop-chip:hover{border-color:rgba(74,222,128,.32);color:#93f2b1}
+    .pop-chip:hover{border-color:rgba(74,222,128,.32);color:var(--accent-text)}
     .discord-card{
       display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;border-radius:var(--radius-2xl);
       background:linear-gradient(135deg,rgba(88,101,242,.18),rgba(88,101,242,.05));
@@ -718,6 +729,104 @@
       .nm-skin-card.pending .nm-skin-body::before{animation:none}
       *{transition-duration:.01ms!important}
     }
+
+    /* ============================================================
+       PERFORMANCE PASS
+       ============================================================ */
+    /* Backdrop blur only earns its cost where content actually scrolls
+       underneath (header, overlays). On plain cards each blurred element was
+       its own composited layer, re-rasterised on every scroll frame. */
+    .nav,.icon-btn,.hero-chip,.note-banner,.search-bar,.tskin-badge,
+    .nm-servers,.nm-post-card,.nm-profile-box,.side-panel,.editor-panel,.maker-preview,
+    .cv-sidebar,.cv-preview,.capes-grid,.legal-doc .legal-box,.panel-box,.nm-viewer-box,
+    .nm-skin-card,.stat-tile,.tool-card,.recent-box,.side-card,.discord-card,.notice-card{
+      backdrop-filter:none;-webkit-backdrop-filter:none
+    }
+    /* The aurora is already built from soft radial gradients, so the extra 28px
+       blur filter bought nothing and forced a re-rasterise every frame. */
+    body::before{filter:none;will-change:transform}
+
+    /* Ring pulse driven by transform/opacity instead of box-shadow spread,
+       which repainted each dot on every frame. */
+    .live-dot,.hero-chip .dot{position:relative;animation:none}
+    .live-dot::after,.hero-chip .dot::after{
+      content:'';position:absolute;inset:0;border-radius:50%;
+      box-shadow:0 0 0 1.5px rgba(74,222,128,.45);
+      animation:pulseRing 2.4s ease-out infinite
+    }
+    @keyframes pulseRing{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.8);opacity:0}}
+
+    /* Keeps a card's hover repaint from invalidating the rest of the grid. */
+    .stat-tile,.tool-card,.side-card,.recent-box{contain:layout style}
+
+    /* ============================================================
+       LIGHT THEME
+       ============================================================ */
+    html[data-theme="light"]{
+      --bg:#f4f7f5;--bg-subtle:#eaefeb;
+      --surface:#fff;--surface-2:#f5f8f6;--surface-3:#eaefec;
+      --border:rgba(6,26,14,.1);--border-hover:rgba(6,26,14,.18);
+      --accent:#15a34a;--accent-bright:#0f7f39;--accent-dark:#116632;
+      --accent-soft:rgba(21,163,74,.1);--accent-ring:rgba(21,163,74,.26);
+      --text:#0c1710;--text-2:#47584e;--text-3:#6b7c72;
+      --viewer-bg:#eef2ef;
+      --grad-accent:linear-gradient(135deg,#12a04a 0%,#0891b2 55%,#7c3aed 100%);
+      --glass:rgba(255,255,255,.7);--glass-2:#fff;
+      --hairline:rgba(6,26,14,.1);
+      --card-fill:linear-gradient(180deg,#fff,rgba(255,255,255,.84));
+      --lift:0 18px 40px -28px rgba(8,34,18,.35);
+      --glow-accent:0 10px 26px -14px rgba(21,163,74,.5);
+      --shadow-sm:0 1px 2px rgba(8,34,18,.08);--shadow-md:0 12px 34px rgba(8,34,18,.12);
+      --accent-text:#0f7a3b;
+      --text-strong:#08120c;
+      color-scheme:light
+    }
+    html[data-theme="light"] body::before{
+      background:
+        radial-gradient(42% 52% at 20% 28%,rgba(21,163,74,.14),transparent 70%),
+        radial-gradient(38% 48% at 80% 14%,rgba(8,145,178,.1),transparent 70%),
+        radial-gradient(34% 44% at 54% 46%,rgba(124,58,237,.08),transparent 70%)
+    }
+    html[data-theme="light"] body::after{
+      background-image:linear-gradient(rgba(6,26,14,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(6,26,14,.05) 1px,transparent 1px)
+    }
+    html[data-theme="light"] .header{background:rgba(255,255,255,.82)}
+    html[data-theme="light"] .search-bar{background:#fff;box-shadow:0 18px 44px -30px rgba(8,34,18,.45)}
+    html[data-theme="light"] .search-bar:focus-within{box-shadow:0 0 0 4px rgba(21,163,74,.12),0 18px 44px -30px rgba(8,34,18,.45)}
+    html[data-theme="light"] .nm-skin-body{
+      background:
+        radial-gradient(circle at 50% 26%,rgba(21,163,74,.1),transparent 62%),
+        linear-gradient(180deg,rgba(6,26,14,.03),transparent 60%)
+    }
+    html[data-theme="light"] .nm-skin-card:hover{box-shadow:0 30px 55px -30px rgba(8,34,18,.42),inset 0 0 0 1px rgba(21,163,74,.18)}
+    html[data-theme="light"] .nm-server-row:hover{background:rgba(6,26,14,.035)}
+    html[data-theme="light"] .tskin-badge{background:rgba(255,255,255,.82)}
+    html[data-theme="light"] .nm-viewer-box canvas,
+    html[data-theme="light"] .cv-preview canvas,
+    html[data-theme="light"] .viewer-checker,
+    html[data-theme="light"] .maker-preview-body{
+      background:
+        radial-gradient(circle at 50% 20%,rgba(21,163,74,.12),transparent 58%),
+        linear-gradient(180deg,#fbfdfb 0%,#e7eee9 100%)
+    }
+    html[data-theme="light"] .vtool,
+    html[data-theme="light"] .nm-viewer-play{background:rgba(255,255,255,.8)}
+    html[data-theme="light"] .modal-overlay{background:rgba(12,30,20,.34)}
+    html[data-theme="light"] .toast{background:rgba(255,255,255,.96);color:var(--text)}
+    html[data-theme="light"] footer{background:linear-gradient(180deg,transparent,rgba(6,26,14,.03))}
+    html[data-theme="light"] .login-btn,
+    html[data-theme="light"] .search-bar .search-btn,
+    html[data-theme="light"] .tool-btn.save,
+    html[data-theme="light"] .auth-submit,
+    html[data-theme="light"] .last-next,
+    html[data-theme="light"] .field-row button{color:#fff}
+    html[data-theme="light"] .spinner{border-top-color:#12a04a}
+    html[data-theme="light"] .recent-chip img{background:#fff}
+
+    /* THEME TOGGLE ICON */
+    .theme-btn .ico-sun{display:none}
+    html[data-theme="light"] .theme-btn .ico-moon{display:none}
+    html[data-theme="light"] .theme-btn .ico-sun{display:block}
   </style>
 </head>
 <body>
@@ -733,7 +842,10 @@
       <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Discord</a>
     </nav>
     <div class="header-right">
-      <button class="icon-btn" title="Theme" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button class="icon-btn theme-btn" id="themeBtn" type="button" title="Switch to light theme" aria-label="Switch to light theme" aria-pressed="false">
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.2 12H2M22 12h-2.2M6.3 6.3 4.8 4.8M19.2 19.2l-1.5-1.5M17.7 6.3l1.5-1.5M4.8 19.2l1.5-1.5"/></svg>
+      </button>
       <button class="login-btn" id="loginBtn">Login / Signup</button>
       <button class="menu-btn" id="menuBtn">☰</button>
     </div>
@@ -767,7 +879,6 @@
     <div class="home-stats reveal">
       <div class="stat-tile"><span class="stat-val" id="statTrending">—</span><span class="stat-label">Trending profiles</span></div>
       <div class="stat-tile"><span class="stat-val" id="statCapes">—</span><span class="stat-label">Capes in catalog</span></div>
-      <div class="stat-tile"><span class="stat-val" id="statServers">—</span><span class="stat-label">Servers tracked</span></div>
       <div class="stat-tile"><span class="stat-val" id="statLookups">—</span><span class="stat-label">Your saved lookups</span></div>
     </div>
     <div class="home-layout">
@@ -1203,12 +1314,12 @@
 
   var POPULAR = ['Notch','jeb_','Dream','Technoblade','Dinnerbone','sweetily','CaptainSparklez','MumboJumbo','Grumm','Grian','EthosLab','xisumavoid','Floppa_4098','Sky_Skripts','wesmc7'];
   var TRENDING = [
-    {name:'Notch',rank:1,age:'12.4d',stars:892},{name:'jeb_',rank:2,age:'9.1d',stars:654},
-    {name:'Dream',rank:3,age:'7.9d',stars:250},{name:'Technoblade',rank:4,age:'6.2d',stars:198},
-    {name:'Dinnerbone',rank:5,age:'5.8d',stars:176},{name:'sweetily',rank:6,age:'4.3d',stars:142},
-    {name:'CaptainSparklez',rank:7,age:'3.9d',stars:128},{name:'MumboJumbo',rank:8,age:'3.1d',stars:115},
-    {name:'Grumm',rank:9,age:'2.7d',stars:98},{name:'Grian',rank:10,age:'2.2d',stars:87},
-    {name:'EthosLab',rank:11,age:'1.9d',stars:76},{name:'xisumavoid',rank:12,age:'1.4d',stars:64}
+    {name:'Technoblade',rank:1,age:'12.4d',stars:892},{name:'Dream',rank:2,age:'9.1d',stars:654},
+    {name:'deardiary12',rank:3,age:'7.9d',stars:250},{name:'Jeff',rank:4,age:'6.2d',stars:198},
+    {name:'Best',rank:5,age:'5.8d',stars:176},{name:'EthosLab',rank:6,age:'4.3d',stars:142},
+    {name:'Mlxzs',rank:7,age:'3.9d',stars:128},{name:'sweetily',rank:8,age:'3.1d',stars:115},
+    {name:'coldified',rank:9,age:'2.7d',stars:98},{name:'CaptainSparklez',rank:10,age:'2.2d',stars:87},
+    {name:'MumboJumbo',rank:11,age:'1.9d',stars:76},{name:'Mermaid',rank:12,age:'1.4d',stars:64}
   ];
   /* players/max are last-known estimates shown until the live status lookup lands. */
   var SERVERS = [
@@ -1426,7 +1537,19 @@
       {n:'Home',h:'1de21419009db483900da6298a1e6cbf9f1bc1523a0dcdc16263fab150693edd'},
       {n:'Yearn',h:'308b32a9e303155a0b4262f9e5483ad4a22e3412e84fe8385a0bdd73dc41fa89'},
       {n:'Menace',h:'dbc21e222528e30dc88445314f7be6ff12d3aeebc3c192054fba7e3b3f8c77b1'},
-      {n:'Zombie Horse',h:'a3f6e4f14801f3ea55e3d95b9b4ef3b5e8802d947f669de93d6ec4b9354a436b'}
+      {n:'Zombie Horse',h:'a3f6e4f14801f3ea55e3d95b9b4ef3b5e8802d947f669de93d6ec4b9354a436b'},
+      {n:'Cobalt',h:'4fdbc899e4ca958d118223e9b1a2a1f59be5b36693cdd9dfcb5b624c4c8b13d8'},
+      {n:'Scrolls Champion',h:'29bf0f478b2e089449a0b6216b5ee862383b007c599541a0a9100f378ad04047'},
+      {n:'Millionth Customer',h:'70efffaf86fe5bc089608d3cb297d3e276b9eb7a8f9f2fe6659c23a2d8b18edf'},
+      {n:'dB',h:'66b7361b97dd9b10080c627dea3109d7dabe20286ef64c396dfd3cc0d38b7ff0'},
+      {n:'Prismarine',h:'d8f8d13a1adf9636a16c31d47f3ecc9bb8d8533108aa5ad2a01b13b1a0c55eac'},
+      {n:'Turtle',h:'5048ea61566353397247d2b7d946034de926b997d5e66c86483dfb1e031aee95'},
+      {n:'Snowman',h:'40155f104c0dc8cdeaadff2c44ab3a45ca306a3bcb8a66ef669f8d5426a5a2f3'},
+      {n:'Spade',h:'2e002d5e1758e79ba51d08d92a0f3a95119f2f435ae7704916507b6c565a7da8'},
+      {n:'Birthday',h:'336ae7f00f2154064f91190a131eee2251d51612d38bece47a497f96ebcfebb1'},
+      {n:'Valentine',h:'45b8891ca563d5c774afad642fe3048c4147b347e970004ffa45a4ad0c64143b'},
+      {n:'Oxeye',h:'ffdec184ef9b53d0a8f7886922e9b4adb23d9963f1df6b34985b37bf07e7baba'},
+      {n:'Blueprint',h:'15501578fe1dd925ccd322b2ff7045be36613085a13f11481ccb29486bae89dc'}
     ];
     capes = defs.map(function (d) {
       return { name: d.n, url: capeTex(d.h), hash: d.h, thumb: capeThumb(d.h) };
@@ -2078,6 +2201,9 @@
   /* Trending cards hold a still 3/4 pose and keep their render loop parked so a
      gridful of models costs nothing until the pointer enters one. */
   var TREND_POSE_Y = -0.55;
+  var TREND_MAX_LIVE = 10;
+  var trendOrder = [];
+  var trendVisible = {};
 
   function freezeTrend(v) {
     if (!v) return;
@@ -2124,13 +2250,21 @@
     if (v.controls) { v.controls.enableZoom = false; v.controls.enablePan = false; }
     if (v.playerObject) v.playerObject.rotation.y = TREND_POSE_Y;
     trendMap[name] = v;
+    trendOrder.push(name);
+    evictOldestTrend();
+    /* Shimmer belongs to cards that are actually fetching a skin, not to every
+       card that simply has not been scrolled to yet. */
+    card.classList.add('pending');
     loadSkinChain(v, trendSkinUrls(name)).then(function () {
       card.classList.remove('pending');
+      /* The viewer may have been retired or replaced while the skin loaded;
+         showing the canvas then would just hide the fallback behind nothing. */
+      if (trendMap[name] !== v) return;
       card.classList.add('is3d');
       freezeTrend(v);
     }).catch(function () {
       card.classList.remove('pending');
-      unmountTrend3D(card);
+      if (trendMap[name] === v) unmountTrend3D(card);
     });
   }
 
@@ -2141,7 +2275,28 @@
       try { v.dispose(); } catch (err) {}
       delete trendMap[name];
     }
+    var at = trendOrder.indexOf(name);
+    if (at !== -1) trendOrder.splice(at, 1);
     card.classList.remove('is3d');
+  }
+
+  /* Browsers cap concurrent WebGL contexts and silently kill the oldest, which
+     could take out the profile viewer. Retiring our own oldest off-screen card
+     keeps us under that ceiling; on-screen cards are never taken away, since
+     the observer would not re-mount them while they stay in view. */
+  function evictOldestTrend() {
+    var grid = $('trendingSkins');
+    if (!grid) return;
+    while (trendOrder.length > TREND_MAX_LIVE) {
+      var name = null;
+      for (var i = 0; i < trendOrder.length; i++) {
+        if (!trendVisible[trendOrder[i]]) { name = trendOrder[i]; break; }
+      }
+      if (!name) return;
+      var card = grid.querySelector('.nm-skin-card[data-name="' + name + '"]');
+      if (!card) return;
+      unmountTrend3D(card);
+    }
   }
 
   function initTrending3D() {
@@ -2176,10 +2331,16 @@
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting) mountTrend3D(en.target);
-        else unmountTrend3D(en.target);
+        var name = en.target.getAttribute('data-name');
+        if (en.isIntersecting) {
+          trendVisible[name] = true;
+          mountTrend3D(en.target);
+        } else {
+          delete trendVisible[name];
+          unmountTrend3D(en.target);
+        }
       });
-    }, { rootMargin: '220px 0px' });
+    }, { rootMargin: '120px 0px' });
     cards.forEach(function (c) {
       io.observe(c);
       c.addEventListener('pointerenter', function () { thawTrend(trendMap[c.getAttribute('data-name')]); });
@@ -2197,6 +2358,30 @@
           freezeTrend(v);
         });
       }, 180);
+    });
+  }
+
+  function applyTheme(theme) {
+    var light = theme === 'light';
+    document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+    try { localStorage.setItem('theme', light ? 'light' : 'dark'); } catch (err) {}
+    var btn = $('themeBtn');
+    if (btn) {
+      var label = light ? 'Switch to dark theme' : 'Switch to light theme';
+      btn.title = label;
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-pressed', light ? 'true' : 'false');
+    }
+    /* Trending viewers are frozen, so nudge them to repaint against the new backdrop. */
+    Object.keys(trendMap).forEach(function (n) { freezeTrend(trendMap[n]); });
+  }
+
+  function initTheme() {
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    var btn = $('themeBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     });
   }
 
@@ -2253,8 +2438,6 @@
     if (caped) caped.textContent = buildCapes().length.toLocaleString();
     var prof = $('statTrending');
     if (prof) prof.textContent = TRENDING.length.toLocaleString();
-    var srv = $('statServers');
-    if (srv) srv.textContent = SERVERS.length.toLocaleString();
     var mine = $('statLookups');
     if (mine) mine.textContent = readLookups().length.toLocaleString();
   }
@@ -2312,7 +2495,7 @@
     if (homeReady) return;
     homeReady = true;
     $('trendingSkins').innerHTML = TRENDING.map(function (s) {
-      return '<div class="nm-skin-card pending" data-name="' + s.name + '">' +
+      return '<div class="nm-skin-card" data-name="' + s.name + '">' +
         '<div class="nm-skin-head"><span class="nm-skin-rank">#' + s.rank + '</span><span class="nm-skin-name">' + s.name + '</span></div>' +
         '<div class="nm-skin-body">' +
           '<span class="tskin-badge">3D</span>' +
@@ -2688,6 +2871,7 @@
     document.querySelector('.search-section').prepend(w);
   }
 
+  initTheme();
   initHome();
   initAuth();
   initReveal();
