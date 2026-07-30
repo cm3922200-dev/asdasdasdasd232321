@@ -587,14 +587,124 @@
     .vtool,.nm-viewer-play{background:rgba(6,9,7,.6);border-color:var(--hairline);backdrop-filter:blur(12px)}
     .vtool.on,.nm-viewer-play.on{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.3);color:#93f2b1}
 
+    /* HOME STATS */
+    .home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem}
+    .stat-tile{
+      display:flex;flex-direction:column;gap:.2rem;padding:1rem 1.15rem;border-radius:var(--radius-lg);
+      background:var(--card-fill);border:1px solid var(--hairline);backdrop-filter:blur(14px)
+    }
+    .stat-val{font-size:1.5rem;font-weight:700;letter-spacing:-.035em;background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+    .stat-label{font-size:.75rem;color:var(--text-3);font-weight:500}
+
+    /* LIVE PLAYER COUNTS */
+    .nm-server-players.live{color:var(--text)}
+    .live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4ade80;margin-right:.4rem;vertical-align:middle;animation:pulseDot 2.2s ease-in-out infinite}
+
+    /* TOOL CARDS */
+    .tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+    .tool-card{
+      display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;text-align:left;
+      padding:1.15rem;border-radius:var(--radius-2xl);background:var(--card-fill);
+      border:1px solid var(--hairline);backdrop-filter:blur(14px);color:var(--text);
+      transition:transform .35s var(--ease),border-color .3s var(--ease),box-shadow .35s var(--ease)
+    }
+    .tool-card:hover{transform:translateY(-4px);border-color:rgba(74,222,128,.32);box-shadow:0 26px 55px -30px rgba(0,0,0,1)}
+    .tool-ico{
+      width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));
+      border:1px solid rgba(74,222,128,.24);color:#93f2b1
+    }
+    .tool-ico svg{width:19px;height:19px}
+    .tool-name{font-size:.9375rem;font-weight:600;letter-spacing:-.02em}
+    .tool-desc{font-size:.8125rem;color:var(--text-3);line-height:1.5}
+
+    /* RECENT LOOKUPS */
+    .recent-box{
+      padding:1rem 1.15rem;border-radius:var(--radius-2xl);background:var(--card-fill);
+      border:1px solid var(--hairline);backdrop-filter:blur(14px);
+      display:flex;flex-wrap:wrap;gap:.5rem
+    }
+    .recent-empty{font-size:.8125rem;color:var(--text-3);margin:0;line-height:1.6}
+    .recent-chip{
+      display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .75rem .35rem .4rem;
+      border-radius:var(--radius-full);background:var(--glass);border:1px solid var(--hairline);
+      color:var(--text-2);font-size:.8125rem;font-weight:500;
+      transition:border-color .25s var(--ease),color .25s var(--ease),background .25s var(--ease)
+    }
+    .recent-chip:hover{border-color:rgba(74,222,128,.3);color:var(--text);background:var(--glass-2)}
+    .recent-chip img{width:22px;height:22px;border-radius:6px;image-rendering:pixelated;display:block}
+
+    /* SIDEBAR EXTRAS */
+    .home-sidebar{display:flex;flex-direction:column;gap:.75rem}
+    .side-card{
+      padding:1rem 1.15rem;border-radius:var(--radius-2xl);background:var(--card-fill);
+      border:1px solid var(--hairline);backdrop-filter:blur(14px)
+    }
+    .side-card-title{font-size:.6875rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);font-weight:600;margin-bottom:.75rem}
+    .pop-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+    .pop-chip{
+      padding:.28rem .65rem;border-radius:var(--radius-full);background:var(--glass);
+      border:1px solid var(--hairline);color:var(--text-2);font-size:.75rem;font-weight:500;
+      transition:border-color .25s var(--ease),color .25s var(--ease)
+    }
+    .pop-chip:hover{border-color:rgba(74,222,128,.32);color:#93f2b1}
+    .discord-card{
+      display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;border-radius:var(--radius-2xl);
+      background:linear-gradient(135deg,rgba(88,101,242,.18),rgba(88,101,242,.05));
+      border:1px solid rgba(88,101,242,.3);backdrop-filter:blur(14px);
+      transition:transform .3s var(--ease),border-color .3s var(--ease)
+    }
+    .discord-card:hover{transform:translateY(-2px);border-color:rgba(88,101,242,.5)}
+    .discord-ico{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--discord);color:#fff}
+    .discord-ico svg{width:19px;height:19px;fill:currentColor}
+    .discord-text{display:flex;flex-direction:column;min-width:0}
+    .discord-text strong{font-size:.875rem;font-weight:600}
+    .discord-text span{font-size:.75rem;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+    /* ACCOUNT SECURITY NOTICE */
+    .notice-card{
+      display:flex;gap:1rem;padding:1.15rem 1.3rem;margin:0 0 1.4rem;border-radius:var(--radius-2xl);
+      background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(251,146,60,.04));
+      border:1px solid rgba(251,191,36,.26);backdrop-filter:blur(14px);
+      box-shadow:0 22px 55px -34px rgba(0,0,0,.95)
+    }
+    .notice-card[hidden]{display:none!important}
+    .notice-icon{
+      width:40px;height:40px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;
+      background:rgba(251,191,36,.13);border:1px solid rgba(251,191,36,.28);color:#fbbf24
+    }
+    .notice-icon svg{width:21px;height:21px}
+    .notice-body{min-width:0}
+    .notice-tag{
+      display:inline-block;margin-bottom:.45rem;padding:.16rem .55rem;border-radius:var(--radius-full);
+      background:rgba(251,191,36,.14);border:1px solid rgba(251,191,36,.3);
+      font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#f5c451
+    }
+    .notice-title{display:block;font-size:1.0625rem;font-weight:700;letter-spacing:-.025em;margin-bottom:.4rem;color:var(--text)}
+    .notice-card p{font-size:.875rem;line-height:1.6;color:var(--text-2);margin-bottom:.5rem}
+    .notice-sub{color:var(--text-3)!important;font-size:.8125rem!important}
+    .notice-action{
+      display:inline-flex;align-items:center;gap:.45rem;margin-top:.35rem;padding:.5rem .9rem;
+      border-radius:var(--radius-full);background:var(--discord);color:#fff;
+      font-size:.8125rem;font-weight:600;transition:filter .25s var(--ease),transform .25s var(--ease)
+    }
+    .notice-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .notice-action svg{width:15px;height:15px;fill:currentColor}
+
     /* RESPONSIVE (modern layer) */
     @media(max-width:1180px){.nm-skins-grid{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:1024px){
       .nm-skins-grid{grid-template-columns:repeat(3,1fr)}
       .search-section{padding:2.5rem 0 1.25rem}
+      .home-stats{grid-template-columns:repeat(2,1fr)}
+      .home-sidebar{position:static}
     }
     @media(max-width:768px){
       .nm-skins-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+      .tool-grid{grid-template-columns:1fr}
+      .home-stats{grid-template-columns:repeat(2,1fr);gap:.5rem}
+      .stat-val{font-size:1.25rem}
+      .notice-card{flex-direction:column;gap:.85rem;padding:1rem 1.1rem}
       .nm-skin-body{height:184px}
       .nm-skin-body img{height:146px}
       .nm-skin-card:hover{transform:translateY(-4px)}
@@ -654,12 +764,18 @@
 
   <!-- HOME -->
   <section id="page-home" class="page active">
+    <div class="home-stats reveal">
+      <div class="stat-tile"><span class="stat-val" id="statTrending">—</span><span class="stat-label">Trending profiles</span></div>
+      <div class="stat-tile"><span class="stat-val" id="statCapes">—</span><span class="stat-label">Capes in catalog</span></div>
+      <div class="stat-tile"><span class="stat-val" id="statServers">—</span><span class="stat-label">Servers tracked</span></div>
+      <div class="stat-tile"><span class="stat-val" id="statLookups">—</span><span class="stat-label">Your saved lookups</span></div>
+    </div>
     <div class="home-layout">
       <div class="home-main">
         <section class="reveal">
           <div class="section-head">
             <h2 class="nm-section-title">Trending Skins</h2>
-            <span class="section-sub">Rendered in 3D · drag to spin</span>
+            <span class="section-sub">Real 3D models · hover and drag to spin</span>
           </div>
           <div class="nm-skins-grid" id="trendingSkins"></div>
           <div class="nm-continue"><a href="#" id="skinsContinue">View all capes →</a></div>
@@ -672,6 +788,38 @@
           </div>
           <div class="nm-servers" id="serverList"></div>
           <div class="nm-continue"><a href="#" id="serversContinue">Browse more →</a></div>
+        </section>
+
+        <section class="reveal">
+          <div class="section-head">
+            <h2 class="nm-section-title">Tools</h2>
+            <span class="section-sub">Build, preview, compare</span>
+          </div>
+          <div class="tool-grid" id="quickTools">
+            <button type="button" class="tool-card" data-tool-page="skin-maker">
+              <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+              <span class="tool-name">Skin Maker</span>
+              <span class="tool-desc">Paint a skin face by face and watch it update on the 3D model.</span>
+            </button>
+            <button type="button" class="tool-card" data-tool-page="capes">
+              <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>
+              <span class="tool-name">Cape Catalog</span>
+              <span class="tool-desc">Every Minecraft cape in one place, ready to try on any skin.</span>
+            </button>
+            <button type="button" class="tool-card" data-tool-page="cape-viewer">
+              <span class="tool-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+              <span class="tool-name">Cape Viewer</span>
+              <span class="tool-desc">Load any player, swap capes, and spin the model in real time.</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="reveal">
+          <div class="section-head">
+            <h2 class="nm-section-title">Your Recent Lookups</h2>
+            <span class="section-sub">Saved on this device only</span>
+          </div>
+          <div class="recent-box" id="recentLookups"></div>
         </section>
       </div>
       <aside class="home-sidebar reveal">
@@ -703,6 +851,19 @@
             <span>MCLookup</span>
           </div>
         </div>
+
+        <div class="side-card">
+          <h3 class="side-card-title">Popular right now</h3>
+          <div class="pop-chips" id="popularNames"></div>
+        </div>
+
+        <a class="discord-card" href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">
+          <span class="discord-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></span>
+          <span class="discord-text">
+            <strong>Join the community</strong>
+            <span>discord.gg/MinecraftCommunity</span>
+          </span>
+        </a>
       </aside>
     </div>
   </section>
@@ -717,11 +878,19 @@
     </div>
     <div id="profileContent" hidden>
       <div id="fileWarn" class="file-warn" hidden>⚠ Open this site via <strong>http://localhost</strong> not by double-clicking the file. Run: <code>python -m http.server 3000</code></div>
-      <div id="profileSuspend" class="suspend" hidden>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <div>
-          <strong>This mclookup.xyz account has been suspended.</strong>
-          <p>We explicitly prohibit the sale or trading of Minecraft accounts and work directly with Mojang to enforce Minecraft's EULA. If you are seeing this, this account has already been reported. If you want to appeal <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Click Here</a>.</p>
+      <div id="profileSuspend" class="notice-card" hidden>
+        <div class="notice-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12.01" y2="16.5"/></svg>
+        </div>
+        <div class="notice-body">
+          <span class="notice-tag">Staff Notice</span>
+          <strong class="notice-title">Account Security Notice</strong>
+          <p>This account has an open dispute or unusual profile activity linked to it, and may have been compromised. Treat any trade, purchase, or transfer involving this profile with caution.</p>
+          <p class="notice-sub">Think this flag is a mistake? Our staff can review it — reach out on the official Discord.</p>
+          <a class="notice-action" href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            Contact staff on Discord
+          </a>
         </div>
       </div>
       <div class="profile-header">
@@ -1041,13 +1210,13 @@
     {name:'Grumm',rank:9,age:'2.7d',stars:98},{name:'Grian',rank:10,age:'2.2d',stars:87},
     {name:'EthosLab',rank:11,age:'1.9d',stars:76},{name:'xisumavoid',rank:12,age:'1.4d',stars:64}
   ];
+  /* players/max are last-known estimates shown until the live status lookup lands. */
   var SERVERS = [
-    {rank:1,name:'MinecraftCommunity',host:'play.minecraftcommunity.net',flag:'🟢',desc:'Survival · Economy · Events · Friendly Community · discord.gg/MinecraftCommunity',players:'847 / 2,000',votes:12847,featured:true},
-    {rank:2,name:'FlowPvP',flag:'🇺🇸',desc:'🔪 FlowPvP 🔪 | The Best Practice Server 🔪 | 1.7-1.8',players:'1,092 / 5,000',votes:11199},
-    {rank:3,name:'MineFun',flag:'🇺🇸',desc:'MineFun | The Best Minecraft Server | Survival | Skyblock | Factions',players:'13,201 / 100,000',votes:10401},
-    {rank:4,name:'Hypixel',flag:'🇺🇸',desc:'Hypixel Network | SkyBlock | Bed Wars | SkyWars | Duels',players:'45,000 / 200,000',votes:9820},
-    {rank:5,name:'PvP Legacy',flag:'🇬🇧',desc:'PvP Legacy | Practice | Ranked | FFA | Pot PvP',players:'892 / 3,000',votes:7654},
-    {rank:6,name:'CubeCraft',flag:'🇪🇸',desc:'CubeCraft Games | EggWars | SkyWars | Lucky Blocks',players:'4,521 / 20,000',votes:6891}
+    {rank:1,name:'DonutSMP',host:'donutsmp.net',flag:'🇺🇸',desc:'Lifesteal SMP · Player economy · Crystal PvP',players:'11,800 / 20,000',votes:18420},
+    {rank:2,name:'Hypixel',host:'mc.hypixel.net',flag:'🇺🇸',desc:'SkyBlock · Bed Wars · SkyWars · Duels',players:'42,000 / 200,000',votes:16980},
+    {rank:3,name:'CraftCube',host:'play.cubecraft.net',flag:'🇳🇱',desc:'EggWars · SkyWars · Lucky Blocks · Minigames',players:'3,900 / 20,000',votes:9240},
+    {rank:4,name:'MineMan',host:'mineman.club',flag:'🇺🇸',desc:'Survival · Skyblock · Prison · Custom items',players:'1,250 / 5,000',votes:6110},
+    {rank:5,name:'Mineplex',host:'us.mineplex.com',flag:'🇺🇸',desc:'Classic minigames · Cake Wars · Nano Games',players:'820 / 10,000',votes:4870}
   ];
   var PAGE_PATHS = { home:'/', 'skin-maker':'/skin-maker', capes:'/capes', 'cape-viewer':'/cape-viewer', privacy:'/privacy', terms:'/terms' };
 
@@ -1790,7 +1959,7 @@
     var el = $('pStatus');
     if (!el) return;
     if (suspended) {
-      el.textContent = 'Suspended';
+      el.textContent = 'Flagged';
       el.className = 'badge red';
     } else {
       el.textContent = 'Active';
@@ -1836,6 +2005,7 @@
         history.replaceState({ page: 'profile', user: p.name }, '', profilePath(p.name));
       }
       setPageTitle('profile', p.name);
+      rememberLookup(p.name);
       return showProfile(p, count);
     }).then(function () {
       $('profileLoading').hidden = true;
@@ -1905,6 +2075,20 @@
 
   var trendMap = {};
   var trendResizeTimer = null;
+  /* Trending cards hold a still 3/4 pose and keep their render loop parked so a
+     gridful of models costs nothing until the pointer enters one. */
+  var TREND_POSE_Y = -0.55;
+
+  function freezeTrend(v) {
+    if (!v) return;
+    try { v.renderPaused = true; } catch (err) {}
+    try { v.render(); } catch (err) {}
+  }
+
+  function thawTrend(v) {
+    if (!v) return;
+    try { v.renderPaused = false; } catch (err) {}
+  }
 
   function trendSkinUrls(name) {
     var n = encodeURIComponent(name);
@@ -1935,14 +2119,15 @@
     v.background = null;
     v.fov = 32;
     v.zoom = 0.62;
-    v.autoRotate = !document.hidden;
-    v.autoRotateSpeed = 0.6;
+    v.autoRotate = false;
+    v.animation = null;
     if (v.controls) { v.controls.enableZoom = false; v.controls.enablePan = false; }
-    if (sv3.IdleAnimation) v.animation = new sv3.IdleAnimation();
+    if (v.playerObject) v.playerObject.rotation.y = TREND_POSE_Y;
     trendMap[name] = v;
     loadSkinChain(v, trendSkinUrls(name)).then(function () {
       card.classList.remove('pending');
       card.classList.add('is3d');
+      freezeTrend(v);
     }).catch(function () {
       card.classList.remove('pending');
       unmountTrend3D(card);
@@ -1995,12 +2180,10 @@
         else unmountTrend3D(en.target);
       });
     }, { rootMargin: '220px 0px' });
-    cards.forEach(function (c) { io.observe(c); });
-
-    document.addEventListener('visibilitychange', function () {
-      Object.keys(trendMap).forEach(function (n) {
-        if (trendMap[n]) trendMap[n].autoRotate = !document.hidden;
-      });
+    cards.forEach(function (c) {
+      io.observe(c);
+      c.addEventListener('pointerenter', function () { thawTrend(trendMap[c.getAttribute('data-name')]); });
+      c.addEventListener('pointerleave', function () { freezeTrend(trendMap[c.getAttribute('data-name')]); });
     });
 
     window.addEventListener('resize', function () {
@@ -2011,8 +2194,96 @@
           if (!v) return;
           var size = trendSize(c);
           try { v.setSize(size.w, size.h); } catch (err) {}
+          freezeTrend(v);
         });
       }, 180);
+    });
+  }
+
+  /* Replaces the estimated player counts with live numbers where the server answers. */
+  function hydrateServerPlayers() {
+    SERVERS.forEach(function (s) {
+      if (!s.host) return;
+      var cell = document.querySelector('.nm-server-row[data-host="' + s.host + '"] .nm-server-players');
+      if (!cell) return;
+      fetch('https://api.mcstatus.io/v2/status/java/' + encodeURIComponent(s.host), { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (!j || !j.online || !j.players || typeof j.players.online !== 'number') return;
+          var max = j.players.max > 0 ? ' / ' + j.players.max.toLocaleString() : '';
+          cell.innerHTML = '<span class="live-dot"></span>' + j.players.online.toLocaleString() + max;
+          cell.classList.add('live');
+          cell.title = 'Live player count for ' + s.host;
+        })
+        .catch(function () {});
+    });
+  }
+
+  function readLookups() {
+    try { return JSON.parse(localStorage.getItem('recentLookups') || '[]'); } catch (err) { return []; }
+  }
+
+  function rememberLookup(name) {
+    if (!name) return;
+    var list = readLookups().filter(function (n) { return n.toLowerCase() !== name.toLowerCase(); });
+    list.unshift(name);
+    list = list.slice(0, 8);
+    try { localStorage.setItem('recentLookups', JSON.stringify(list)); } catch (err) {}
+    renderRecentLookups();
+    renderHomeStats();
+  }
+
+  function renderRecentLookups() {
+    var box = $('recentLookups');
+    if (!box) return;
+    var list = readLookups();
+    if (!list.length) {
+      box.innerHTML = '<p class="recent-empty">No lookups yet — search a username above and it will show up here for quick access.</p>';
+      return;
+    }
+    box.innerHTML = list.map(function (n) {
+      return '<button type="button" class="recent-chip" data-name="' + n + '">' +
+        '<img src="' + avatarUrl(n, 32) + '" alt="" loading="lazy">' +
+        '<span>' + n + '</span></button>';
+    }).join('');
+  }
+
+  function renderHomeStats() {
+    var caped = $('statCapes');
+    if (caped) caped.textContent = buildCapes().length.toLocaleString();
+    var prof = $('statTrending');
+    if (prof) prof.textContent = TRENDING.length.toLocaleString();
+    var srv = $('statServers');
+    if (srv) srv.textContent = SERVERS.length.toLocaleString();
+    var mine = $('statLookups');
+    if (mine) mine.textContent = readLookups().length.toLocaleString();
+  }
+
+  function initHomeExtras() {
+    renderHomeStats();
+    renderRecentLookups();
+
+    var recent = $('recentLookups');
+    if (recent) {
+      recent.addEventListener('click', function (e) {
+        var chip = e.target.closest('.recent-chip');
+        if (chip) searchPlayer(chip.getAttribute('data-name'));
+      });
+    }
+
+    var pop = $('popularNames');
+    if (pop) {
+      pop.innerHTML = POPULAR.slice(0, 10).map(function (n) {
+        return '<button type="button" class="pop-chip" data-name="' + n + '">' + n + '</button>';
+      }).join('');
+      pop.addEventListener('click', function (e) {
+        var chip = e.target.closest('.pop-chip');
+        if (chip) searchPlayer(chip.getAttribute('data-name'));
+      });
+    }
+
+    document.querySelectorAll('#quickTools [data-tool-page]').forEach(function (btn) {
+      btn.addEventListener('click', function () { navigateTo(btn.getAttribute('data-tool-page')); });
     });
   }
 
@@ -2069,6 +2340,8 @@
         toast('Copied ' + host);
       }
     };
+    hydrateServerPlayers();
+    initHomeExtras();
     $('skinsContinue').onclick = function (e) { e.preventDefault(); navigateTo('capes'); };
     $('serversContinue').onclick = function (e) { e.preventDefault(); toast('Server listings coming soon'); };
     if (localStorage.getItem('noteClosed') === '1') $('noteBanner').classList.add('hidden');
