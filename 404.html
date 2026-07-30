@@ -385,6 +385,229 @@
       .footer-grid{grid-template-columns:1fr}
       .footer-bottom{flex-direction:column;gap:.5rem;text-align:center}
     }
+
+    /* ============================================================
+       MODERN LAYER — 2026 refresh
+       ============================================================ */
+    :root{
+      --bg:#050706;--bg-subtle:#080b09;
+      --grad-accent:linear-gradient(135deg,#4ade80 0%,#22d3ee 55%,#a78bfa 100%);
+      --glass:rgba(255,255,255,.04);
+      --glass-2:rgba(255,255,255,.07);
+      --hairline:rgba(255,255,255,.075);
+      --card-fill:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.014));
+      --lift:0 24px 60px -34px rgba(0,0,0,.95);
+      --glow-accent:0 10px 30px -12px rgba(74,222,128,.55);
+      --radius-2xl:24px;
+    }
+    body{background:var(--bg);letter-spacing:-.005em}
+    body::before{
+      content:'';position:fixed;left:-15%;right:-15%;top:-25%;height:85vh;z-index:-2;pointer-events:none;
+      background:
+        radial-gradient(42% 52% at 20% 28%,rgba(52,208,88,.20),transparent 70%),
+        radial-gradient(38% 48% at 80% 14%,rgba(34,211,238,.14),transparent 70%),
+        radial-gradient(34% 44% at 54% 46%,rgba(167,139,250,.11),transparent 70%);
+      filter:blur(28px);animation:auroraFloat 24s ease-in-out infinite alternate
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+      background-size:68px 68px;
+      -webkit-mask-image:radial-gradient(ellipse 85% 55% at 50% 0%,#000 10%,transparent 78%);
+      mask-image:radial-gradient(ellipse 85% 55% at 50% 0%,#000 10%,transparent 78%)
+    }
+    @keyframes auroraFloat{
+      0%{transform:translate3d(0,0,0) scale(1)}
+      50%{transform:translate3d(2.5%,2%,0) scale(1.07)}
+      100%{transform:translate3d(-2.5%,-1.5%,0) scale(1.03)}
+    }
+    @keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.35)}50%{box-shadow:0 0 0 5px rgba(74,222,128,0)}}
+    @keyframes shimmer{0%{background-position:180% 0}100%{background-position:-80% 0}}
+
+    /* scroll reveal */
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+    .reveal.in{opacity:1;transform:none}
+
+    /* HEADER */
+    .header{background:rgba(5,7,6,.62);backdrop-filter:blur(24px) saturate(1.7);border-bottom:none}
+    .header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,222,128,.34) 25%,rgba(34,211,238,.26) 60%,transparent)}
+    .logo-name{letter-spacing:-.035em}
+    .brand-accent{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .nav{background:var(--glass);border-color:var(--hairline);backdrop-filter:blur(14px)}
+    .nav a,.nav button{transition:color .25s var(--ease),background .25s var(--ease),box-shadow .25s var(--ease)}
+    .nav a:hover,.nav button:hover{background:var(--glass-2);color:#fff}
+    .nav a.active,.nav button.active{
+      background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,211,238,.1));color:#93f2b1;
+      box-shadow:inset 0 0 0 1px rgba(74,222,128,.26),0 6px 18px -10px rgba(74,222,128,.7)
+    }
+    .icon-btn{background:var(--glass);border-color:var(--hairline);backdrop-filter:blur(12px)}
+    .icon-btn:hover{background:var(--glass-2);transform:translateY(-1px)}
+    .login-btn{background:var(--grad-accent);color:#04140a;box-shadow:var(--glow-accent);transition:filter .25s var(--ease),transform .25s var(--ease)}
+    .login-btn:hover{background:var(--grad-accent);filter:brightness(1.09);transform:translateY(-1px)}
+
+    /* HERO + SEARCH */
+    .search-section{padding:3.75rem 0 1.75rem}
+    .search-hero{margin-bottom:1.9rem}
+    .hero-chip{
+      display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.15rem;
+      padding:.35rem .85rem;border-radius:var(--radius-full);
+      background:var(--glass);border:1px solid var(--hairline);backdrop-filter:blur(12px);
+      font-size:.75rem;font-weight:500;color:var(--text-2)
+    }
+    .hero-chip .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulseDot 2.2s ease-in-out infinite}
+    .search-hero h1{font-size:clamp(2.1rem,5.4vw,3.5rem);line-height:1.04;letter-spacing:-.045em;margin-bottom:.8rem}
+    .search-hero h1 .grad{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .search-hero p{font-size:1rem;max-width:580px;color:var(--text-2)}
+    .search-bar{
+      max-width:680px;border-radius:var(--radius-full);padding:.4rem .4rem .4rem 1.3rem;
+      background:rgba(255,255,255,.045);border:1px solid var(--hairline);backdrop-filter:blur(18px);
+      box-shadow:0 26px 60px -34px rgba(0,0,0,.95)
+    }
+    .search-bar:focus-within{border-color:rgba(74,222,128,.42);box-shadow:0 0 0 4px rgba(74,222,128,.09),0 26px 60px -34px rgba(0,0,0,.95)}
+    .search-bar input{font-size:.9875rem;padding:.8rem 0}
+    .search-bar .search-btn{border-radius:var(--radius-full);padding:.75rem 1.4rem;background:var(--grad-accent);color:#04140a;box-shadow:var(--glow-accent)}
+    .search-bar .search-btn:hover{background:var(--grad-accent);filter:brightness(1.09)}
+    .note-banner{max-width:680px;border-radius:var(--radius-lg);backdrop-filter:blur(12px)}
+
+    /* SECTION HEADS */
+    .nm-section-title{font-size:1.3rem;letter-spacing:-.03em}
+    .section-head{margin-bottom:1.15rem}
+
+    /* SURFACES */
+    .nm-servers,.nm-post-card,.nm-profile-box,.side-panel,.editor-panel,.maker-preview,
+    .cv-sidebar,.cv-preview,.capes-grid,.legal-doc .legal-box,.panel-box,.nm-viewer-box,.auth-modal{
+      background:var(--card-fill);border:1px solid var(--hairline);
+      backdrop-filter:blur(16px);box-shadow:var(--lift)
+    }
+    .nm-servers,.nm-post-card,.nm-profile-box,.side-panel,.editor-panel,.maker-preview,
+    .cv-sidebar,.cv-preview,.capes-grid,.legal-doc .legal-box,.nm-viewer-box{border-radius:var(--radius-2xl)}
+    .auth-modal{border-radius:var(--radius-2xl);box-shadow:0 40px 90px -40px rgba(0,0,0,1)}
+
+    /* TRENDING — 3D CARDS */
+    .nm-skins-grid{grid-template-columns:repeat(4,1fr);gap:1rem;perspective:1400px}
+    .nm-skin-card{
+      border-radius:var(--radius-2xl);background:var(--card-fill);border:1px solid var(--hairline);
+      backdrop-filter:blur(14px);box-shadow:var(--lift);transform-style:preserve-3d;
+      transition:transform .55s var(--ease),box-shadow .55s var(--ease),border-color .3s var(--ease)
+    }
+    .nm-skin-card:hover{
+      background:var(--card-fill);
+      transform:translateY(-7px) rotateX(7deg) rotateY(-7deg) scale(1.025);
+      border-color:rgba(74,222,128,.34);
+      box-shadow:0 38px 70px -30px rgba(0,0,0,1),inset 0 0 0 1px rgba(74,222,128,.14)
+    }
+    .nm-skin-head{padding:.6rem .8rem;border-bottom:1px solid var(--hairline);font-size:.75rem;min-height:34px}
+    .nm-skin-name{max-width:110px;font-size:.75rem}
+    .nm-skin-body{
+      height:212px;padding:0;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 26%,rgba(74,222,128,.12),transparent 62%),
+        linear-gradient(180deg,rgba(255,255,255,.022),transparent 60%)
+    }
+    .nm-skin-body::after{
+      content:'';position:absolute;left:50%;bottom:16px;width:62%;height:13px;transform:translateX(-50%);
+      border-radius:50%;background:radial-gradient(ellipse,rgba(74,222,128,.3),transparent 70%);
+      filter:blur(7px);opacity:.75;pointer-events:none
+    }
+    .nm-skin-body img{
+      position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+      height:168px;width:auto;transition:opacity .5s var(--ease);z-index:1
+    }
+    .tskin-canvas{
+      position:absolute;inset:0;width:100%!important;height:100%!important;display:block;
+      opacity:0;transition:opacity .6s var(--ease);z-index:2;cursor:grab;touch-action:pan-y
+    }
+    .tskin-canvas:active{cursor:grabbing}
+    .nm-skin-card.is3d .tskin-canvas{opacity:1}
+    .nm-skin-card.is3d .nm-skin-body img{opacity:0}
+    .tskin-badge{
+      position:absolute;top:.6rem;left:.6rem;z-index:3;padding:.16rem .45rem;border-radius:6px;
+      background:rgba(4,8,6,.55);border:1px solid var(--hairline);backdrop-filter:blur(8px);
+      font-size:.5625rem;font-weight:700;letter-spacing:.09em;color:var(--text-3);
+      opacity:0;transition:opacity .4s var(--ease);pointer-events:none
+    }
+    .nm-skin-card.is3d .tskin-badge{opacity:1;color:#93f2b1;border-color:rgba(74,222,128,.3)}
+    .nm-skin-card.pending .nm-skin-body::before{
+      content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+      background:linear-gradient(100deg,transparent 22%,rgba(255,255,255,.055) 46%,transparent 68%);
+      background-size:220% 100%;animation:shimmer 1.5s linear infinite
+    }
+    .nm-skin-foot{padding:.5rem .8rem;font-size:.6875rem;border-top:1px solid var(--hairline)}
+    .nm-continue a{display:inline-flex;align-items:center;gap:.3rem;transition:gap .25s var(--ease)}
+    .nm-continue a:hover{gap:.55rem;text-decoration:none}
+
+    /* SERVERS */
+    .nm-server-row{padding:1rem 1.15rem;border-bottom:1px solid var(--hairline);transition:background .3s var(--ease),transform .3s var(--ease)}
+    .nm-server-row:hover{background:rgba(255,255,255,.045);transform:translateX(3px)}
+    .nm-server-row.featured{
+      background:linear-gradient(90deg,rgba(74,222,128,.11),rgba(34,211,238,.04) 45%,transparent);
+      border-left:none;box-shadow:inset 3px 0 0 0 #4ade80
+    }
+    .nm-server-name{font-size:.9375rem}
+
+    /* SIDEBAR POST */
+    .nm-post-card{border-color:rgba(74,222,128,.2)}
+    .nm-post-card::before{background:var(--grad-accent)}
+    .nm-post-badge{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.28);color:#93f2b1}
+
+    /* MISC CONTROLS */
+    .sel-btn,.tool-btn,.btn-row button,.copy-btn,.api-btns a,.field-row input,.head-cmd input,.head-row select{
+      background:var(--glass);border-color:var(--hairline)
+    }
+    .sel-btn:hover,.tool-btn:hover,.btn-row button:hover,.api-btns a:hover{background:var(--glass-2)}
+    .tool-btn.save{background:var(--grad-accent);color:#04140a}
+    .auth-submit,.last-next,.field-row button{background:var(--grad-accent);color:#04140a;box-shadow:var(--glow-accent)}
+    .auth-submit:hover,.last-next:hover{background:var(--grad-accent);filter:brightness(1.09)}
+    .cape-card{background:var(--glass);border-color:var(--hairline);transition:transform .35s var(--ease),border-color .3s var(--ease),background .3s var(--ease)}
+    .cape-card:hover{transform:translateY(-3px) scale(1.02);border-color:rgba(74,222,128,.32);background:var(--glass-2)}
+    .badge.green{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.28)}
+    .modal-overlay{background:rgba(3,5,4,.66);backdrop-filter:blur(14px)}
+    .toast{background:rgba(14,18,16,.9);border-color:var(--hairline);backdrop-filter:blur(16px);border-radius:var(--radius-full)}
+    .spinner{border-top-color:#4ade80}
+
+    /* FOOTER */
+    footer{position:relative;background:linear-gradient(180deg,transparent,rgba(255,255,255,.022));border-top:1px solid var(--hairline);margin-top:4.5rem}
+    footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(74,222,128,.3) 30%,rgba(34,211,238,.22) 65%,transparent)}
+    .footer-col a{transition:color .25s var(--ease),transform .25s var(--ease)}
+    .footer-col a:hover{transform:translateX(2px)}
+
+    /* 3D VIEWER BACKDROPS */
+    .nm-viewer-box canvas,.cv-preview canvas,.viewer-checker,.maker-preview-body{
+      background:
+        radial-gradient(circle at 50% 20%,rgba(74,222,128,.13),transparent 58%),
+        linear-gradient(180deg,#0d1210 0%,#070a08 100%)
+    }
+    .maker-preview-body canvas,.viewer-checker canvas{background:transparent}
+    .nm-viewer-box{position:relative}
+    .nm-viewer-box::after{
+      content:'';position:absolute;left:50%;bottom:8%;width:46%;height:18px;transform:translateX(-50%);
+      border-radius:50%;background:radial-gradient(ellipse,rgba(74,222,128,.26),transparent 70%);
+      filter:blur(9px);pointer-events:none
+    }
+    .vtool,.nm-viewer-play{background:rgba(6,9,7,.6);border-color:var(--hairline);backdrop-filter:blur(12px)}
+    .vtool.on,.nm-viewer-play.on{background:linear-gradient(135deg,rgba(74,222,128,.18),rgba(34,211,238,.1));border-color:rgba(74,222,128,.3);color:#93f2b1}
+
+    /* RESPONSIVE (modern layer) */
+    @media(max-width:1180px){.nm-skins-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:1024px){
+      .nm-skins-grid{grid-template-columns:repeat(3,1fr)}
+      .search-section{padding:2.5rem 0 1.25rem}
+    }
+    @media(max-width:768px){
+      .nm-skins-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
+      .nm-skin-body{height:184px}
+      .nm-skin-body img{height:146px}
+      .nm-skin-card:hover{transform:translateY(-4px)}
+      .nav{background:var(--card-fill);backdrop-filter:blur(18px)}
+      .search-section{padding:2rem 0 1rem}
+    }
+    @media(prefers-reduced-motion:reduce){
+      body::before{animation:none}
+      .reveal{opacity:1;transform:none;transition:none}
+      .nm-skin-card:hover{transform:none}
+      .nm-skin-card.pending .nm-skin-body::before{animation:none}
+      *{transition-duration:.01ms!important}
+    }
   </style>
 </head>
 <body>
@@ -397,7 +620,7 @@
       <button data-page="skin-maker">Skin Maker</button>
       <button data-page="capes">Capes</button>
       <button data-page="cape-viewer">Cape Viewer</button>
-      <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a>
+      <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Discord</a>
     </nav>
     <div class="header-right">
       <button class="icon-btn" title="Theme" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
@@ -409,8 +632,9 @@
 
 <div class="search-section wrap" id="globalSearch">
   <div class="search-hero">
-    <h1>Search Minecraft profiles</h1>
-    <p>Look up any Java username or UUID — skins, capes, name history & 3D preview.</p>
+    <span class="hero-chip"><span class="dot"></span>Live 3D skin rendering · 2026</span>
+    <h1>Search <span class="grad">Minecraft</span> profiles</h1>
+    <p>Look up any Java username or UUID — skins, capes, name history and a real-time 3D preview.</p>
   </div>
   <form class="search-bar" id="globalSearchForm">
     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -421,7 +645,7 @@
     </button>
   </form>
   <div class="note-banner" id="noteBanner">
-    <div><strong>Note:</strong> The only official Discord server for MCLookup is <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">discord.gg/minecraftserver</a>.</div>
+    <div><strong>Note:</strong> The only official Discord server for MCLookup is <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">discord.gg/MinecraftCommunity</a>.</div>
     <button type="button" class="note-close" id="noteClose" aria-label="Close">×</button>
   </div>
 </div>
@@ -432,16 +656,16 @@
   <section id="page-home" class="page active">
     <div class="home-layout">
       <div class="home-main">
-        <section>
+        <section class="reveal">
           <div class="section-head">
             <h2 class="nm-section-title">Trending Skins</h2>
-            <span class="section-sub">Popular profiles this week</span>
+            <span class="section-sub">Rendered in 3D · drag to spin</span>
           </div>
           <div class="nm-skins-grid" id="trendingSkins"></div>
           <div class="nm-continue"><a href="#" id="skinsContinue">View all capes →</a></div>
         </section>
 
-        <section>
+        <section class="reveal">
           <div class="section-head">
             <h2 class="nm-section-title">Top Servers</h2>
             <span class="section-sub">Community favorites</span>
@@ -450,7 +674,7 @@
           <div class="nm-continue"><a href="#" id="serversContinue">Browse more →</a></div>
         </section>
       </div>
-      <aside class="home-sidebar">
+      <aside class="home-sidebar reveal">
         <div class="nm-post-card">
           <div class="nm-post-badge">5 Year Anniversary</div>
           <div class="nm-post-head">
@@ -458,7 +682,7 @@
             <div class="nm-post-ident">
               <div class="nm-post-name-row">
                 <span class="nm-post-name">MCLookup</span>
-                <a href="https://discord.gg/minecraftserver" class="nm-post-follow" target="_blank" rel="noopener">Follow</a>
+                <a href="https://discord.gg/MinecraftCommunity" class="nm-post-follow" target="_blank" rel="noopener">Follow</a>
               </div>
               <div class="nm-post-handle">@mclookup.xyz</div>
             </div>
@@ -497,7 +721,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div>
           <strong>This mclookup.xyz account has been suspended.</strong>
-          <p>We explicitly prohibit the sale or trading of Minecraft accounts and work directly with Mojang to enforce Minecraft's EULA. If you are seeing this, this account has already been reported. If you want to appeal <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Click Here</a>.</p>
+          <p>We explicitly prohibit the sale or trading of Minecraft accounts and work directly with Mojang to enforce Minecraft's EULA. If you are seeing this, this account has already been reported. If you want to appeal <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Click Here</a>.</p>
         </div>
       </div>
       <div class="profile-header">
@@ -689,7 +913,7 @@
         <h2>Cookies &amp; local storage</h2>
         <p>We use browser local storage for basic features such as view counters and UI preferences. We do not sell personal data to advertisers.</p>
         <h2>Data removal</h2>
-        <p>To request removal of a profile listing or personal information, contact us at <a href="mailto:support@mclookup.xyz">support@mclookup.xyz</a> or via <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a>.</p>
+        <p>To request removal of a profile listing or personal information, contact us at <a href="mailto:support@mclookup.xyz">support@mclookup.xyz</a> or via <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Discord</a>.</p>
         <h2>Third parties</h2>
         <p>We link to external services (Mojang APIs, skin CDNs, Discord). Their policies apply when you leave MCLookup.</p>
         <h2>Contact</h2>
@@ -722,7 +946,7 @@
         <h2>Changes</h2>
         <p>We may update these terms at any time. Continued use of the site after changes means you accept the updated terms.</p>
         <h2>Contact</h2>
-        <p>Support: <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">discord.gg/minecraftserver</a> · <a href="mailto:support@mclookup.xyz">support@mclookup.xyz</a></p>
+        <p>Support: <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">discord.gg/MinecraftCommunity</a> · <a href="mailto:support@mclookup.xyz">support@mclookup.xyz</a></p>
       </div>
     </div>
   </section>
@@ -745,16 +969,16 @@
       <div class="footer-col"><h4>Legal</h4>
         <a href="/privacy" data-nav="privacy">Privacy Policy</a>
         <a href="/terms" data-nav="terms">Terms of Service</a>
-        <a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Support</a>
+        <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Support</a>
       </div>
       <div class="footer-col"><h4>Community</h4>
-        <a href="https://discord.gg/minecraftserver" target="_blank">Discord</a>
+        <a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">discord.gg/MinecraftCommunity</a>
         <a href="mailto:support@mclookup.xyz">support@mclookup.xyz</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 MCLookup. All rights reserved.</span>
-      <div><a href="/privacy" data-nav="privacy">Privacy</a><a href="/terms" data-nav="terms">Terms</a><a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Support</a><a href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">Discord</a></div>
+      <div><a href="/privacy" data-nav="privacy">Privacy</a><a href="/terms" data-nav="terms">Terms</a><a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Support</a><a href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">Discord</a></div>
     </div>
   </div>
 </footer>
@@ -782,7 +1006,7 @@
       <button type="submit" class="auth-submit" id="authSubmit">Sign Up</button>
     </form>
     <div class="auth-or">OR</div>
-    <a class="auth-discord" href="https://discord.gg/minecraftserver" target="_blank" rel="noopener">
+    <a class="auth-discord" href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
       <span id="authDiscordText">Sign up with Discord</span>
     </a>
@@ -792,7 +1016,7 @@
     <h2>Last Step</h2>
     <p>Finish setting up your MCLookup account by linking your Minecraft profile.</p>
     <ol>
-      <li>To link your Minecraft account to MCLookup you first need to join the <a class="inline-discord" href="https://discord.gg/minecraftserver" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Discord server</a>.</li>
+      <li>To link your Minecraft account to MCLookup you first need to join the <a class="inline-discord" href="https://discord.gg/MinecraftCommunity" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Discord server</a>.</li>
       <li>Once you join, follow the steps to have your account linked to MCLookup via the Mojang API.</li>
     </ol>
     <button type="button" class="last-next" id="lastNext">Next</button>
@@ -818,7 +1042,7 @@
     {name:'EthosLab',rank:11,age:'1.9d',stars:76},{name:'xisumavoid',rank:12,age:'1.4d',stars:64}
   ];
   var SERVERS = [
-    {rank:1,name:'Minecraft Community',host:'play.minecraft-community.net',flag:'🟢',desc:'Survival · Economy · Events · Friendly Community · Join today!',players:'847 / 2,000',votes:12847,featured:true},
+    {rank:1,name:'MinecraftCommunity',host:'play.minecraftcommunity.net',flag:'🟢',desc:'Survival · Economy · Events · Friendly Community · discord.gg/MinecraftCommunity',players:'847 / 2,000',votes:12847,featured:true},
     {rank:2,name:'FlowPvP',flag:'🇺🇸',desc:'🔪 FlowPvP 🔪 | The Best Practice Server 🔪 | 1.7-1.8',players:'1,092 / 5,000',votes:11199},
     {rank:3,name:'MineFun',flag:'🇺🇸',desc:'MineFun | The Best Minecraft Server | Survival | Skyblock | Factions',players:'13,201 / 100,000',votes:10401},
     {rank:4,name:'Hypixel',flag:'🇺🇸',desc:'Hypixel Network | SkyBlock | Bed Wars | SkyWars | Duels',players:'45,000 / 200,000',votes:9820},
@@ -1679,20 +1903,154 @@
     return Promise.resolve();
   }
 
+  var trendMap = {};
+  var trendResizeTimer = null;
+
+  function trendSkinUrls(name) {
+    var n = encodeURIComponent(name);
+    return ['https://crafthead.net/skin/' + n, 'https://mc-heads.net/skin/' + n, 'https://minotar.net/skin/' + n];
+  }
+
+  function trendSize(card) {
+    var box = card.querySelector('.nm-skin-body');
+    var w = Math.max(140, Math.round((box && box.clientWidth) || 190));
+    var h = Math.max(150, Math.round((box && box.clientHeight) || 212));
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    return { w: Math.round(w * dpr), h: Math.round(h * dpr) };
+  }
+
+  function mountTrend3D(card) {
+    var name = card.getAttribute('data-name');
+    if (!name || trendMap[name] || !sv3 || !sv3.SkinViewer) return;
+    var canvas = card.querySelector('.tskin-canvas');
+    if (!canvas) return;
+    var size = trendSize(card);
+    var v;
+    try {
+      v = new sv3.SkinViewer({ canvas: canvas, width: size.w, height: size.h });
+    } catch (err) {
+      card.classList.remove('pending');
+      return;
+    }
+    v.background = null;
+    v.fov = 32;
+    v.zoom = 0.62;
+    v.autoRotate = !document.hidden;
+    v.autoRotateSpeed = 0.6;
+    if (v.controls) { v.controls.enableZoom = false; v.controls.enablePan = false; }
+    if (sv3.IdleAnimation) v.animation = new sv3.IdleAnimation();
+    trendMap[name] = v;
+    loadSkinChain(v, trendSkinUrls(name)).then(function () {
+      card.classList.remove('pending');
+      card.classList.add('is3d');
+    }).catch(function () {
+      card.classList.remove('pending');
+      unmountTrend3D(card);
+    });
+  }
+
+  function unmountTrend3D(card) {
+    var name = card.getAttribute('data-name');
+    var v = trendMap[name];
+    if (v) {
+      try { v.dispose(); } catch (err) {}
+      delete trendMap[name];
+    }
+    card.classList.remove('is3d');
+  }
+
+  function initTrending3D() {
+    var grid = $('trendingSkins');
+    if (!grid) return;
+    var cards = [].slice.call(grid.querySelectorAll('.nm-skin-card'));
+
+    var pressed = null;
+    grid.addEventListener('pointerdown', function (e) { pressed = { x: e.clientX, y: e.clientY }; });
+    grid.addEventListener('click', function (e) {
+      if (pressed) {
+        var dx = e.clientX - pressed.x, dy = e.clientY - pressed.y;
+        pressed = null;
+        if (Math.sqrt(dx * dx + dy * dy) > 6) return;
+      }
+      var card = e.target.closest('.nm-skin-card');
+      if (card) searchPlayer(card.getAttribute('data-name'));
+    });
+
+    var supported = !!(sv3 && sv3.SkinViewer && window.WebGLRenderingContext);
+    if (!supported) {
+      cards.forEach(function (c) { c.classList.remove('pending'); });
+      return;
+    }
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(function (c, i) {
+        c.classList.remove('pending');
+        if (i < 4) mountTrend3D(c);
+      });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) mountTrend3D(en.target);
+        else unmountTrend3D(en.target);
+      });
+    }, { rootMargin: '220px 0px' });
+    cards.forEach(function (c) { io.observe(c); });
+
+    document.addEventListener('visibilitychange', function () {
+      Object.keys(trendMap).forEach(function (n) {
+        if (trendMap[n]) trendMap[n].autoRotate = !document.hidden;
+      });
+    });
+
+    window.addEventListener('resize', function () {
+      clearTimeout(trendResizeTimer);
+      trendResizeTimer = setTimeout(function () {
+        cards.forEach(function (c) {
+          var v = trendMap[c.getAttribute('data-name')];
+          if (!v) return;
+          var size = trendSize(c);
+          try { v.setSize(size.w, size.h); } catch (err) {}
+        });
+      }, 180);
+    });
+  }
+
+  function initReveal() {
+    var els = [].slice.call(document.querySelectorAll('.reveal'));
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function (el, i) {
+      el.style.transitionDelay = Math.min(i * 90, 360) + 'ms';
+      io.observe(el);
+    });
+  }
+
   var homeReady = false;
   function initHome() {
     if (homeReady) return;
     homeReady = true;
     $('trendingSkins').innerHTML = TRENDING.map(function (s) {
-      return '<div class="nm-skin-card" data-name="' + s.name + '">' +
+      return '<div class="nm-skin-card pending" data-name="' + s.name + '">' +
         '<div class="nm-skin-head"><span class="nm-skin-rank">#' + s.rank + '</span><span class="nm-skin-name">' + s.name + '</span></div>' +
-        '<div class="nm-skin-body"><img src="' + bodyRender(s.name) + '" alt="' + s.name + '" loading="lazy" onerror="this.src=\'' + bodyUrl(s.name, 120) + '\'"></div>' +
+        '<div class="nm-skin-body">' +
+          '<span class="tskin-badge">3D</span>' +
+          '<img src="' + bodyRender(s.name) + '" alt="' + s.name + '" loading="lazy" onerror="this.src=\'' + bodyUrl(s.name, 120) + '\'">' +
+          '<canvas class="tskin-canvas" aria-hidden="true"></canvas>' +
+        '</div>' +
         '<div class="nm-skin-foot"><span>' + s.age + '</span><span class="stars">' + s.stars + '★</span></div></div>';
     }).join('');
-    $('trendingSkins').onclick = function (e) {
-      var card = e.target.closest('.nm-skin-card');
-      if (card) searchPlayer(card.getAttribute('data-name'));
-    };
+    initTrending3D();
     $('serverList').innerHTML = SERVERS.map(function (s) {
       var hostHtml = s.host ? '<span class="nm-server-host">' + s.host + '</span>' : '';
       return '<div class="nm-server-row' + (s.featured ? ' featured' : '') + '" data-host="' + (s.host || '') + '">' +
@@ -1967,7 +2325,7 @@
     var authModal = $('authModal');
     var lastStep = $('lastStepModal');
     var authTab = 'signup';
-    var DISCORD = 'https://discord.gg/minecraftserver';
+    var DISCORD = 'https://discord.gg/MinecraftCommunity';
 
     function resetAuth() {
       authModal.classList.remove('hidden');
@@ -2059,6 +2417,7 @@
 
   initHome();
   initAuth();
+  initReveal();
   handleRoute();
   console.log('MCLookup ready', sv3 ? '(3D OK)' : '(3D lib loading...)');
 })();
