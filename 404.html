@@ -997,7 +997,7 @@
   <section id="page-profile" class="page">
     <div id="profileLoading" class="loading" hidden><div class="spinner"></div><p>Loading profile...</p></div>
     <div id="profileError" class="error-state" hidden>
-      <h2>Player Not Found</h2>
+      <h2 id="errorTitle">Player Not Found</h2>
       <p id="errorMsg"></p>
       <button class="login-btn" style="margin-top:1rem" id="errorHomeBtn">Back to Home</button>
     </div>
@@ -1606,14 +1606,24 @@
     if (!sv3 || !sv3.SkinViewer) return null;
     var canvas = $(id);
     if (!canvas) return null;
-    if (viewers[id]) { viewers[id].dispose(); delete walks[id]; }
+    if (viewers[id]) { try { viewers[id].dispose(); } catch (err) {} delete walks[id]; delete viewers[id]; }
+    /* Trending cards alone can exhaust the browser WebGL context budget.
+       Free them before creating the profile / tool viewer so search never
+       dies with "Error creating WebGL context". */
+    if (typeof disposeAllTrend3D === 'function') disposeAllTrend3D();
     var dims = viewerDims(canvas, opts);
-    var v = new sv3.SkinViewer({
-      canvas: canvas,
-      width: Math.floor(dims.w * dims.dpr),
-      height: Math.floor(dims.h * dims.dpr),
-      skin: opts.skin || defaultSkin()
-    });
+    var v;
+    try {
+      v = new sv3.SkinViewer({
+        canvas: canvas,
+        width: Math.floor(dims.w * dims.dpr),
+        height: Math.floor(dims.h * dims.dpr),
+        skin: opts.skin || defaultSkin()
+      });
+    } catch (err) {
+      console.warn('WebGL viewer unavailable', err);
+      return null;
+    }
     applyViewerSize(canvas, v, dims);
     if (opts.checker) v.background = null;
     else if (opts.background !== undefined) v.background = opts.background;
@@ -1740,7 +1750,13 @@
       gs.style.display = 'block';
       gs.classList.toggle('compact', name === 'profile');
     }
-    if (name === 'home') initHome();
+    /* Leave the home grid's WebGL contexts behind when navigating away so
+       profile / cape / maker viewers always have a free slot. */
+    if (name !== 'home' && typeof disposeAllTrend3D === 'function') disposeAllTrend3D();
+    if (name === 'home') {
+      initHome();
+      if (typeof remountVisibleTrends === 'function') remountVisibleTrends();
+    }
     if (name === 'skin-maker') initMaker();
     if (name === 'capes') initCapesPage();
     if (name === 'cape-viewer') initCapeViewer();
@@ -2164,7 +2180,11 @@
     }).catch(function (e) {
       $('profileLoading').hidden = true;
       $('profileError').hidden = false;
-      $('errorMsg').textContent = e.message || 'Unknown error.';
+      var msg = (e && e.message) ? e.message : 'Unknown error.';
+      var notFound = /not found|does not exist|not a Minecraft username/i.test(msg);
+      var title = $('errorTitle');
+      if (title) title.textContent = notFound ? 'Player Not Found' : 'Could not load profile';
+      $('errorMsg').textContent = msg;
     });
   }
 
@@ -2219,6 +2239,11 @@
         return loadProfileCape(v, p);
       }).then(function () {
         if (sv3.IdleAnimation) v.animation = new sv3.IdleAnimation();
+      }).catch(function (err) {
+        /* Skin/cape load or a late WebGL failure must not bury a found profile. */
+        console.warn('Profile 3D preview failed', err);
+        try { v.dispose(); } catch (e) {}
+        delete viewers.profileCanvas;
       });
     }
     return Promise.resolve();
@@ -2229,7 +2254,9 @@
   /* Trending cards hold a still 3/4 pose and keep their render loop parked so a
      gridful of models costs nothing until the pointer enters one. */
   var TREND_POSE_Y = -0.55;
-  var TREND_MAX_LIVE = 10;
+  /* Keep this low — browsers allow ~8–16 WebGL contexts total, and the profile
+     viewer needs one free slot the moment someone searches. */
+  var TREND_MAX_LIVE = 6;
   var trendOrder = [];
   var trendVisible = {};
 
@@ -2305,7 +2332,29 @@
     }
     var at = trendOrder.indexOf(name);
     if (at !== -1) trendOrder.splice(at, 1);
-    card.classList.remove('is3d');
+    card.classList.remove('is3d', 'pending');
+  }
+
+  function disposeAllTrend3D() {
+    var grid = $('trendingSkins');
+    if (!grid) { trendMap = {}; trendOrder = []; trendVisible = {}; return; }
+    [].slice.call(grid.querySelectorAll('.nm-skin-card')).forEach(unmountTrend3D);
+    trendMap = {};
+    trendOrder = [];
+    trendVisible = {};
+  }
+
+  function remountVisibleTrends() {
+    var grid = $('trendingSkins');
+    if (!grid || !sv3 || !sv3.SkinViewer) return;
+    var pad = 120;
+    [].slice.call(grid.querySelectorAll('.nm-skin-card')).forEach(function (card) {
+      var r = card.getBoundingClientRect();
+      if (r.bottom < -pad || r.top > window.innerHeight + pad) return;
+      var name = card.getAttribute('data-name');
+      trendVisible[name] = true;
+      mountTrend3D(card);
+    });
   }
 
   /* Browsers cap concurrent WebGL contexts and silently kill the oldest, which
@@ -2320,9 +2369,12 @@
       for (var i = 0; i < trendOrder.length; i++) {
         if (!trendVisible[trendOrder[i]]) { name = trendOrder[i]; break; }
       }
+      /* If every live card is on screen, still free the oldest one so search
+         and tool viewers can always claim a context. */
+      if (!name) name = trendOrder[0];
       if (!name) return;
       var card = grid.querySelector('.nm-skin-card[data-name="' + name + '"]');
-      if (!card) return;
+      if (!card) { trendOrder.shift(); continue; }
       unmountTrend3D(card);
     }
   }
