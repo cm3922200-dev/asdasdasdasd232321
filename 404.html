@@ -2254,9 +2254,9 @@
   /* Trending cards hold a still 3/4 pose and keep their render loop parked so a
      gridful of models costs nothing until the pointer enters one. */
   var TREND_POSE_Y = -0.55;
-  /* Keep this low — browsers allow ~8–16 WebGL contexts total, and the profile
-     viewer needs one free slot the moment someone searches. */
-  var TREND_MAX_LIVE = 6;
+  /* Browsers allow ~8–16 WebGL contexts. Keep the home grid under that, and
+     always dispose the whole grid before creating a profile/tool viewer. */
+  var TREND_MAX_LIVE = 8;
   var trendOrder = [];
   var trendVisible = {};
 
@@ -2287,6 +2287,10 @@
   function mountTrend3D(card) {
     var name = card.getAttribute('data-name');
     if (!name || trendMap[name] || !sv3 || !sv3.SkinViewer) return;
+    /* Free off-screen slots first. Never steal a visible card's context just to
+       mount another one — that was turning #1/#2 back into flat 2D images. */
+    evictOldestTrend();
+    if (trendOrder.length >= TREND_MAX_LIVE) return;
     var canvas = card.querySelector('.tskin-canvas');
     if (!canvas) return;
     var size = trendSize(card);
@@ -2306,7 +2310,6 @@
     if (v.playerObject) v.playerObject.rotation.y = TREND_POSE_Y;
     trendMap[name] = v;
     trendOrder.push(name);
-    evictOldestTrend();
     /* Shimmer belongs to cards that are actually fetching a skin, not to every
        card that simply has not been scrolled to yet. */
     card.classList.add('pending');
@@ -2348,6 +2351,7 @@
     var grid = $('trendingSkins');
     if (!grid || !sv3 || !sv3.SkinViewer) return;
     var pad = 120;
+    /* DOM order so #1 / #2 win the WebGL slots over cards further down. */
     [].slice.call(grid.querySelectorAll('.nm-skin-card')).forEach(function (card) {
       var r = card.getBoundingClientRect();
       if (r.bottom < -pad || r.top > window.innerHeight + pad) return;
@@ -2357,24 +2361,24 @@
     });
   }
 
-  /* Browsers cap concurrent WebGL contexts and silently kill the oldest, which
-     could take out the profile viewer. Retiring our own oldest off-screen card
-     keeps us under that ceiling; on-screen cards are never taken away, since
-     the observer would not re-mount them while they stay in view. */
+  function fillVisibleTrends() {
+    remountVisibleTrends();
+  }
+
+  /* Retire only off-screen cards. Visible ones stay mounted so the top of the
+     trending grid never silently falls back to 2D. Profile search frees the
+     whole grid via disposeAllTrend3D instead. */
   function evictOldestTrend() {
     var grid = $('trendingSkins');
     if (!grid) return;
-    while (trendOrder.length > TREND_MAX_LIVE) {
+    while (trendOrder.length >= TREND_MAX_LIVE) {
       var name = null;
       for (var i = 0; i < trendOrder.length; i++) {
         if (!trendVisible[trendOrder[i]]) { name = trendOrder[i]; break; }
       }
-      /* If every live card is on screen, still free the oldest one so search
-         and tool viewers can always claim a context. */
-      if (!name) name = trendOrder[0];
       if (!name) return;
       var card = grid.querySelector('.nm-skin-card[data-name="' + name + '"]');
-      if (!card) { trendOrder.shift(); continue; }
+      if (!card) { trendOrder.splice(trendOrder.indexOf(name), 1); delete trendMap[name]; continue; }
       unmountTrend3D(card);
     }
   }
@@ -2414,18 +2418,21 @@
         var name = en.target.getAttribute('data-name');
         if (en.isIntersecting) {
           trendVisible[name] = true;
-          mountTrend3D(en.target);
         } else {
           delete trendVisible[name];
           unmountTrend3D(en.target);
         }
       });
-    }, { rootMargin: '120px 0px' });
+      /* Refill in DOM order so #1/#2 keep 3D, and a card skipped while the cap
+         was full gets another chance after an eviction. */
+      fillVisibleTrends();
+    }, { rootMargin: '80px 0px' });
     cards.forEach(function (c) {
       io.observe(c);
       c.addEventListener('pointerenter', function () { thawTrend(trendMap[c.getAttribute('data-name')]); });
       c.addEventListener('pointerleave', function () { freezeTrend(trendMap[c.getAttribute('data-name')]); });
     });
+    fillVisibleTrends();
 
     window.addEventListener('resize', function () {
       clearTimeout(trendResizeTimer);
