@@ -1439,11 +1439,27 @@
   }
 
   function getCounts() { try { return JSON.parse(localStorage.getItem('mc_searches') || '{}'); } catch (e) { return {}; } }
-  function bumpCount(uuid) {
+  /* Deterministic fake baseline so profiles look active without a backend.
+     Trending cards get a busy-looking range; everything else stays low (3–9). */
+  function seededViews(key) {
+    var s = String(key || 'x').toLowerCase(), h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    h = Math.abs(h >>> 0);
+    var trending = TRENDING.some(function (t) { return t.name.toLowerCase() === s; });
+    if (trending) return 280 + (h % 321); /* 280–600 */
+    return 3 + (h % 7); /* 3–9 */
+  }
+  function bumpCount(uuid, name) {
     var c = getCounts(), k = stripUUID(uuid);
+    var nameKey = String(name || '').toLowerCase();
+    var isTrending = TRENDING.some(function (t) { return t.name.toLowerCase() === nameKey; });
     c[k] = (c[k] || 0) + 1;
     localStorage.setItem('mc_searches', JSON.stringify(c));
-    return c[k];
+    if (isTrending) return seededViews(nameKey) + c[k];
+    return seededViews(k || nameKey); /* always 3–9 for non-trending */
   }
 
   function capeTex(hash) { return 'https://textures.minecraft.net/texture/' + hash; }
@@ -1767,8 +1783,13 @@
     var t = q.trim();
     if (!t) return Promise.reject(new Error('Enter a username or UUID.'));
     if (isUUID(t)) {
-      return minetoolsProfile(stripUUID(formatUUID(t))).catch(function () {
-        return ashcon(formatUUID(t), t);
+      /* Prefer Ashcon first — one round trip for skin/cape/history. */
+      return ashcon(formatUUID(t), t).then(function (ash) {
+        return finalizeProfile(ash, t);
+      }).catch(function () {
+        return minetoolsProfile(stripUUID(formatUUID(t))).then(function (mt) {
+          return finalizeProfile(mt, t);
+        });
       });
     }
     /* Reject impossible usernames here so a typo or a server address does not
@@ -1776,15 +1797,18 @@
     if (!/^[A-Za-z0-9_]{3,16}$/.test(t)) {
       return Promise.reject(new Error('“' + t + '” is not a Minecraft username. Usernames are 3–16 characters, using only letters, numbers and underscores.'));
     }
-    return playerdbProfile(t).then(function (pdb) {
-      return minetoolsProfile(stripUUID(pdb.uuid)).then(function (mt) {
-        return mergeProfiles(pdb, mt, t);
+    /* Fast path: Ashcon alone. Fall back to PlayerDB → MineTools if Ashcon is down. */
+    return ashcon(encodeURIComponent(t), t).then(function (ash) {
+      return finalizeProfile(ash, t);
+    }).catch(function (primaryErr) {
+      return playerdbProfile(t).then(function (pdb) {
+        return minetoolsProfile(stripUUID(pdb.uuid)).then(function (mt) {
+          return mergeProfiles(pdb, mt, t);
+        }).catch(function () {
+          return enrichWithAshcon(pdb, t);
+        });
       }).catch(function () {
-        return enrichWithAshcon(pdb, t);
-      });
-    }).catch(function () {
-      return ashcon(encodeURIComponent(t), t).then(function (ash) {
-        return finalizeProfile(ash, t);
+        throw primaryErr;
       });
     });
   }
@@ -2055,8 +2079,40 @@
 
   function finalizeProfile(p, searched) {
     p.nameHistory = buildNameHistory(p);
-    return enrichCapesFromMcProfiles(p, searched).then(function (profile) {
-      return enrichSkins(profile, searched);
+    /* Capes + skin history in parallel — cuts a serial hop off every lookup. */
+    return Promise.all([
+      enrichCapesFromMcProfiles(p, searched),
+      namemcSkinsLookup(p.name || searched).then(function (nm) {
+        if ((!nm || !nm.skins || !nm.skins.length) && p.uuid) {
+          return namemcSkinsLookup(stripUUID(p.uuid)).then(function (nm2) {
+            return (nm2 && nm2.skins && nm2.skins.length) ? nm2 : nm;
+          });
+        }
+        return nm;
+      }).catch(function () { return null; })
+    ]).then(function (pair) {
+      var profile = pair[0];
+      var nm = pair[1];
+      if (nm && nm.skins && nm.skins.length) {
+        profile.skins = nm.skins.map(function (s) {
+          return {
+            id: s.id,
+            url: s.textureUrl,
+            textureUrl: s.textureUrl,
+            thumb: s.faceUrl,
+            model: s.model || 'classic',
+            active: !!s.active,
+            observedAt: s.observedAt || null
+          };
+        });
+        return profile;
+      }
+      var mpSkins = parseMcProfilesSkins(profile._mcprofiles, profile);
+      profile.skins = mpSkins.length ? mpSkins : buildSkinsFromActive(profile);
+      if (profile.skins.length && !profile.skins.some(function (s) { return s.active; })) {
+        profile.skins[0].active = true;
+      }
+      return profile;
     });
   }
 
@@ -2167,7 +2223,7 @@
 
     fetchProfile(t).then(function (p) {
       currentProfile = p;
-      var count = bumpCount(p.uuid);
+      var count = bumpCount(p.uuid, p.name);
       if (!opts.skipHistory && location.protocol !== 'file:') {
         history.replaceState({ page: 'profile', user: p.name }, '', profilePath(p.name));
       }
@@ -2254,9 +2310,11 @@
   /* Trending cards hold a still 3/4 pose and keep their render loop parked so a
      gridful of models costs nothing until the pointer enters one. */
   var TREND_POSE_Y = -0.55;
-  /* Browsers allow ~8–16 WebGL contexts. Keep the home grid under that, and
-     always dispose the whole grid before creating a profile/tool viewer. */
-  var TREND_MAX_LIVE = 8;
+  /* Browsers allow ~8–16 WebGL contexts. Cover all 12 trending cards so the
+     bottom row does not fall back to flat 2D while upper cards still count as
+     "visible" via IntersectionObserver rootMargin. Dispose the whole grid
+     before creating a profile/tool viewer. */
+  var TREND_MAX_LIVE = 12;
   var trendOrder = [];
   var trendVisible = {};
 
@@ -2365,9 +2423,9 @@
     remountVisibleTrends();
   }
 
-  /* Retire only off-screen cards. Visible ones stay mounted so the top of the
-     trending grid never silently falls back to 2D. Profile search frees the
-     whole grid via disposeAllTrend3D instead. */
+  /* Prefer retiring off-screen cards. If every mounted card still counts as
+     visible (rootMargin), drop the one furthest from the viewport center so
+     newly scrolled-in cards can still get a WebGL slot. */
   function evictOldestTrend() {
     var grid = $('trendingSkins');
     if (!grid) return;
@@ -2376,7 +2434,18 @@
       for (var i = 0; i < trendOrder.length; i++) {
         if (!trendVisible[trendOrder[i]]) { name = trendOrder[i]; break; }
       }
-      if (!name) return;
+      if (!name) {
+        var mid = window.innerHeight / 2, worst = -1, worstDist = -1;
+        for (var j = 0; j < trendOrder.length; j++) {
+          var c = grid.querySelector('.nm-skin-card[data-name="' + trendOrder[j] + '"]');
+          if (!c) continue;
+          var r = c.getBoundingClientRect();
+          var dist = Math.abs((r.top + r.bottom) / 2 - mid);
+          if (dist > worstDist) { worstDist = dist; worst = j; }
+        }
+        if (worst < 0) return;
+        name = trendOrder[worst];
+      }
       var card = grid.querySelector('.nm-skin-card[data-name="' + name + '"]');
       if (!card) { trendOrder.splice(trendOrder.indexOf(name), 1); delete trendMap[name]; continue; }
       unmountTrend3D(card);
@@ -2426,7 +2495,7 @@
       /* Refill in DOM order so #1/#2 keep 3D, and a card skipped while the cap
          was full gets another chance after an eviction. */
       fillVisibleTrends();
-    }, { rootMargin: '80px 0px' });
+    }, { rootMargin: '40px 0px' });
     cards.forEach(function (c) {
       io.observe(c);
       c.addEventListener('pointerenter', function () { thawTrend(trendMap[c.getAttribute('data-name')]); });
