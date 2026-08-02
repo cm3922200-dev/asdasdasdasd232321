@@ -59,9 +59,9 @@
     .header{position:sticky;top:0;z-index:200;background:rgba(7,9,8,.78);backdrop-filter:blur(20px) saturate(1.2);border-bottom:1px solid var(--border)}
     .header-inner{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);gap:1.25rem}
     .logo{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:1.05rem;cursor:pointer;color:var(--text);letter-spacing:-.025em}
-    .logo-icon{width:30px;height:30px;flex-shrink:0;border-radius:8px;overflow:hidden;background:#0a0a0a}
+    .logo-icon{width:34px;height:34px;flex-shrink:0;border-radius:9px;overflow:hidden}
     .logo-icon img{width:100%;height:100%;display:block;object-fit:contain}
-    .logo-full{height:34px;width:auto;display:block;background:#0a0a0a;border-radius:10px;padding:3px 10px 3px 6px;box-sizing:content-box}
+    .logo-full{height:44px;width:auto;max-width:min(220px,52vw);display:block;object-fit:contain}
     .logo-name{font-weight:700;white-space:nowrap}
     .brand-accent{color:var(--accent-bright)}
     .nav{display:flex;align-items:center;gap:.2rem;padding:.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-full)}
@@ -717,7 +717,7 @@
     .notice-action:hover{filter:brightness(1.08);transform:translateY(-1px)}
     .notice-action svg{width:15px;height:15px;fill:currentColor}
 
-    /* CLAIM / VERIFIED PROFILE BANNER */
+    /* CLAIM / FLAGGED PROFILE BANNER */
     .claim-banner{
       display:flex;align-items:center;justify-content:space-between;gap:1rem;
       margin:0 0 1.15rem;padding:.85rem 1.05rem;border-radius:var(--radius-xl);
@@ -734,19 +734,26 @@
       box-shadow:0 8px 22px -12px rgba(34,211,238,.55);transition:filter .2s,transform .2s;
     }
     .claim-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
-    .claim-verified{
-      background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(34,211,238,.05));
-      border-color:rgba(74,222,128,.32);align-items:flex-start;
+    .claim-flagged{
+      display:block;align-items:stretch;
+      background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(239,68,68,.05));
+      border-color:rgba(251,191,36,.32);padding:1.1rem 1.2rem;
     }
-    .claim-verified .claim-tag{
-      display:inline-block;margin-bottom:.35rem;padding:.14rem .5rem;border-radius:999px;
-      background:rgba(74,222,128,.14);border:1px solid rgba(74,222,128,.28);
-      font-size:.625rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);
+    .claim-flagged .claim-tag{
+      display:inline-block;margin-bottom:.45rem;padding:.16rem .55rem;border-radius:999px;
+      background:rgba(251,191,36,.14);border:1px solid rgba(251,191,36,.3);
+      font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#eab308;
     }
-    .claim-verified strong{display:block;font-size:1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.25rem;color:var(--text)}
-    .claim-verified p{margin:0 0 .35rem;font-size:.875rem;line-height:1.55;color:var(--text-2)}
-    .claim-verified .claim-sub{margin:0;font-size:.8125rem;color:var(--text-3)}
-    .claim-verified .claim-sub a{color:var(--accent-bright);font-weight:600}
+    .claim-flagged strong.claim-title{
+      display:block;font-size:1.05rem;font-weight:700;letter-spacing:-.025em;margin-bottom:.55rem;color:var(--text);
+    }
+    .claim-flagged p{margin:0 0 .65rem;font-size:.875rem;line-height:1.6;color:var(--text-2)}
+    .claim-flagged p:last-child{margin-bottom:0}
+    .claim-flagged .claim-eula{
+      margin-top:.15rem;padding-top:.75rem;border-top:1px solid rgba(251,191,36,.22);
+      font-size:.8125rem;color:var(--text-3);
+    }
+    .claim-flagged .claim-eula a{color:var(--accent-bright);font-weight:600}
     @media(max-width:640px){
       .claim-banner{flex-direction:column;align-items:stretch}
       .claim-btn{text-align:center}
@@ -842,9 +849,9 @@
     }
     html[data-theme="light"] .header{background:rgba(255,255,255,.82)}
     html[data-theme="light"] .logo-full,
-    html[data-theme="light"] .logo-icon{background:#0b1220;box-shadow:0 8px 20px -14px rgba(8,34,18,.45)}
+    html[data-theme="light"] .logo-icon{background:transparent;box-shadow:none}
     html[data-theme="light"] .claim-banner{background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(21,163,74,.06));border-color:rgba(6,182,212,.28)}
-    html[data-theme="light"] .claim-verified{background:linear-gradient(135deg,rgba(21,163,74,.1),rgba(6,182,212,.05));border-color:rgba(21,163,74,.3)}
+    html[data-theme="light"] .claim-flagged{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.05));border-color:rgba(217,119,6,.28)}
     html[data-theme="light"] .search-bar{background:#fff;box-shadow:0 18px 44px -30px rgba(8,34,18,.45)}
     html[data-theme="light"] .search-bar:focus-within{box-shadow:0 0 0 4px rgba(21,163,74,.12),0 18px 44px -30px rgba(8,34,18,.45)}
     html[data-theme="light"] .nm-skin-body{
@@ -1047,28 +1054,12 @@
         <span class="claim-text">Is <strong id="claimName">—</strong> you?</span>
         <a class="claim-btn" id="claimBtn" href="https://discord.gg/mcsearch" target="_blank" rel="noopener">Claim this profile</a>
       </div>
-      <div id="profileVerified" class="claim-banner claim-verified" hidden>
-        <div>
-          <span class="claim-tag">Verified</span>
-          <strong>Profile claimed</strong>
-          <p>This profile is verified through a linked Minecraft account.</p>
-          <p class="claim-sub">Think this is an error? <a href="https://discord.gg/mcsearch" target="_blank" rel="noopener">Contact staff</a></p>
-        </div>
-      </div>
-      <div id="profileSuspend" class="notice-card" hidden>
-        <div class="notice-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12.01" y2="16.5"/></svg>
-        </div>
-        <div class="notice-body">
-          <span class="notice-tag">Staff Notice</span>
-          <strong class="notice-title">Account Security Notice</strong>
-          <p>This account has an open dispute or unusual profile activity linked to it, and may have been compromised. Treat any trade, purchase, or transfer involving this profile with caution.</p>
-          <p class="notice-sub">Think this flag is a mistake? Our staff can review it — reach out on the official Discord.</p>
-          <a class="notice-action" href="https://discord.gg/mcsearch" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-            Contact staff on Discord
-          </a>
-        </div>
+      <div id="profileFlagged" class="claim-banner claim-flagged" hidden>
+        <span class="claim-tag">Flagged</span>
+        <strong class="claim-title">This account is flagged</strong>
+        <p>This profile is flagged because it has been involved in account selling, or it was recently compromised.</p>
+        <p>Treat any trade, purchase, or transfer involving this account with extreme caution. Profiles in this situation can be suspended or banned from multiplayer, and may be reported to Mojang for Minecraft EULA violations.</p>
+        <p class="claim-eula">We enforce the Minecraft EULA strictly. If you believe this flag is a mistake, contact <a href="mailto:support@mcsearch.io">support@mcsearch.io</a> — do not ignore this notice.</p>
       </div>
       <div class="profile-header">
         <h1 class="profile-name" id="pNameBig">—</h1>
@@ -2243,22 +2234,19 @@
   }
 
   function updateProfileSuspendBanner(profile) {
-    var banner = $('profileSuspend');
     var claim = $('profileClaim');
-    var verified = $('profileVerified');
-    if (banner) banner.hidden = true;
+    var flagged = $('profileFlagged');
     if (claim) claim.hidden = true;
-    if (verified) verified.hidden = true;
+    if (flagged) flagged.hidden = true;
     applyProfileStatus(false);
     if ($('claimName') && profile && profile.name) {
       $('claimName').textContent = profile.name;
     }
     return loadSuspendedList().then(function (list) {
       var suspended = profileIsSuspended(profile, list);
-      if (banner) banner.hidden = !suspended;
       applyProfileStatus(suspended);
       if (suspended) {
-        if (verified) verified.hidden = false;
+        if (flagged) flagged.hidden = false;
       } else {
         if (claim) claim.hidden = false;
       }
@@ -2280,9 +2268,8 @@
     $('profileLoading').hidden = false;
     $('profileError').hidden = true;
     $('profileContent').hidden = true;
-    if ($('profileSuspend')) $('profileSuspend').hidden = true;
     if ($('profileClaim')) $('profileClaim').hidden = true;
-    if ($('profileVerified')) $('profileVerified').hidden = true;
+    if ($('profileFlagged')) $('profileFlagged').hidden = true;
     applyProfileStatus(false);
     if (location.protocol === 'file:') $('fileWarn').hidden = false;
     setPageTitle('profile', t);
