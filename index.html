@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MCSearch — Minecraft Profile Search</title>
+  <title>MCSearch: Minecraft Profile Search</title>
   <script>
     /* Applied before first paint so the theme never flashes the wrong palette.
        Light is the default; only an explicit choice by the visitor is stored. */
@@ -1465,11 +1465,11 @@
     return { page: 'home' };
   }
   function setPageTitle(page, name) {
-    if (page === 'profile' && name) document.title = name + ' — MCSearch';
-    else if (page === 'privacy') document.title = 'Privacy Policy — MCSearch';
-    else if (page === 'terms') document.title = 'Terms of Service — MCSearch';
-    else if (page === 'home') document.title = 'MCSearch — Minecraft Profile Search';
-    else document.title = (page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')) + ' — MCSearch';
+    if (page === 'profile' && name) document.title = name + ' | Search | MCSearch';
+    else if (page === 'privacy') document.title = 'Privacy Policy | MCSearch';
+    else if (page === 'terms') document.title = 'Terms of Service | MCSearch';
+    else if (page === 'home') document.title = 'MCSearch: Minecraft Profile Search';
+    else document.title = (page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')) + ' | MCSearch';
   }
   function navigateTo(page, opts) {
     opts = opts || {};
@@ -2237,9 +2237,14 @@
     return names.some(function (n) { return isSuspendedName(n, list); });
   }
 
-  function applyProfileStatus(suspended) {
+  function isTrendingName(name) {
+    var key = String(name || '').toLowerCase();
+    return TRENDING.some(function (t) { return t.name.toLowerCase() === key; });
+  }
+
+  function applyProfileStatus(suspended, claimed) {
     var el = $('pStatus');
-    var claimed = $('profileClaimed');
+    var claimedEl = $('profileClaimed');
     if (el) {
       if (suspended) {
         el.textContent = 'Flagged';
@@ -2249,7 +2254,7 @@
         el.className = 'badge green';
       }
     }
-    if (claimed) claimed.hidden = !suspended;
+    if (claimedEl) claimedEl.hidden = !claimed;
   }
 
   function updateProfileSuspendBanner(profile) {
@@ -2257,16 +2262,18 @@
     var flagged = $('profileFlagged');
     if (claim) claim.hidden = true;
     if (flagged) flagged.hidden = true;
-    applyProfileStatus(false);
+    applyProfileStatus(false, false);
     if ($('claimName') && profile && profile.name) {
       $('claimName').textContent = profile.name;
     }
+    var trending = !!(profile && isTrendingName(profile.name));
     return loadSuspendedList().then(function (list) {
       var suspended = profileIsSuspended(profile, list);
-      applyProfileStatus(suspended);
+      var claimed = suspended || trending;
+      applyProfileStatus(suspended, claimed);
       if (suspended) {
         if (flagged) flagged.hidden = false;
-      } else {
+      } else if (!claimed) {
         if (claim) claim.hidden = false;
       }
     });
@@ -2289,7 +2296,7 @@
     $('profileContent').hidden = true;
     if ($('profileClaim')) $('profileClaim').hidden = true;
     if ($('profileFlagged')) $('profileFlagged').hidden = true;
-    applyProfileStatus(false);
+    applyProfileStatus(false, false);
     if (location.protocol === 'file:') $('fileWarn').hidden = false;
     setPageTitle('profile', t);
 
