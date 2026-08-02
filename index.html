@@ -1852,9 +1852,10 @@
       });
     }
     /* Reject impossible usernames here so a typo or a server address does not
-       cost three round trips before failing with an opaque API status. */
-    if (!/^[A-Za-z0-9_]{3,16}$/.test(t)) {
-      return Promise.reject(new Error('“' + t + '” is not a Minecraft username. Usernames are 3–16 characters, using only letters, numbers and underscores.'));
+       cost three round trips before failing with an opaque API status.
+       New Mojang accounts are 3–16, but legacy 1–2 letter names still exist. */
+    if (!/^[A-Za-z0-9_]{1,16}$/.test(t)) {
+      return Promise.reject(new Error('“' + t + '” is not a Minecraft username. Usernames are 1–16 characters, using only letters, numbers and underscores.'));
     }
     /* Fast path: Ashcon alone. Fall back to PlayerDB → MineTools if Ashcon is down. */
     return ashcon(encodeURIComponent(t), t).then(function (ash) {
