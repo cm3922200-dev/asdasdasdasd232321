@@ -61,7 +61,7 @@
     .logo{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:1.05rem;cursor:pointer;color:var(--text);letter-spacing:-.025em}
     .logo-icon{width:34px;height:34px;flex-shrink:0;border-radius:9px;overflow:hidden}
     .logo-icon img{width:100%;height:100%;display:block;object-fit:contain}
-    .logo-full{height:44px;width:auto;max-width:min(220px,52vw);display:block;object-fit:contain}
+    .logo-full{height:48px;width:auto;max-width:min(260px,58vw);display:block;object-fit:contain}
     .logo-name{font-weight:700;white-space:nowrap}
     .brand-accent{color:var(--accent-bright)}
     .nav{display:flex;align-items:center;gap:.2rem;padding:.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-full)}
@@ -146,8 +146,8 @@
     .nm-post-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-dark),var(--accent-bright),var(--accent-dark))}
     .nm-post-badge{display:inline-block;margin-bottom:.75rem;padding:.2rem .55rem;border-radius:var(--radius-full);background:var(--accent-soft);border:1px solid var(--accent-ring);color:var(--accent-bright);font-size:.6875rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
     .nm-post-head{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.875rem}
-    .nm-post-avatar{width:44px;height:44px;border-radius:var(--radius-md);overflow:hidden;flex-shrink:0;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
-    .nm-post-avatar img{width:100%;height:100%;display:block;object-fit:cover;image-rendering:pixelated;image-rendering:crisp-edges}
+    .nm-post-avatar{width:48px;height:48px;border-radius:12px;overflow:hidden;flex-shrink:0;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.18);display:flex;align-items:center;justify-content:center;padding:4px}
+    .nm-post-avatar img{width:100%;height:100%;display:block;object-fit:contain}
     .nm-post-ident{flex:1;min-width:0}
     .nm-post-name-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
     .nm-post-name{font-weight:700;font-size:.9375rem;color:var(--text);line-height:1.2}
@@ -736,13 +736,13 @@
     .claim-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
     .claim-flagged{
       display:block;align-items:stretch;
-      background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(239,68,68,.05));
-      border-color:rgba(251,191,36,.32);padding:1.1rem 1.2rem;
+      background:linear-gradient(135deg,rgba(244,63,94,.1),rgba(139,92,246,.07));
+      border-color:rgba(244,63,94,.32);padding:1.1rem 1.2rem;
     }
     .claim-flagged .claim-tag{
       display:inline-block;margin-bottom:.45rem;padding:.16rem .55rem;border-radius:999px;
-      background:rgba(251,191,36,.14);border:1px solid rgba(251,191,36,.3);
-      font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#eab308;
+      background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.28);
+      font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#fb7185;
     }
     .claim-flagged strong.claim-title{
       display:block;font-size:1.05rem;font-weight:700;letter-spacing:-.025em;margin-bottom:.55rem;color:var(--text);
@@ -750,10 +750,10 @@
     .claim-flagged p{margin:0 0 .65rem;font-size:.875rem;line-height:1.6;color:var(--text-2)}
     .claim-flagged p:last-child{margin-bottom:0}
     .claim-flagged .claim-eula{
-      margin-top:.15rem;padding-top:.75rem;border-top:1px solid rgba(251,191,36,.22);
+      margin-top:.15rem;padding-top:.75rem;border-top:1px solid rgba(244,63,94,.2);
       font-size:.8125rem;color:var(--text-3);
     }
-    .claim-flagged .claim-eula a{color:var(--accent-bright);font-weight:600}
+    .claim-flagged .claim-eula a{color:#fb7185;font-weight:700;text-decoration:underline;text-underline-offset:2px}
     @media(max-width:640px){
       .claim-banner{flex-direction:column;align-items:stretch}
       .claim-btn{text-align:center}
@@ -851,7 +851,9 @@
     html[data-theme="light"] .logo-full,
     html[data-theme="light"] .logo-icon{background:transparent;box-shadow:none}
     html[data-theme="light"] .claim-banner{background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(21,163,74,.06));border-color:rgba(6,182,212,.28)}
-    html[data-theme="light"] .claim-flagged{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.05));border-color:rgba(217,119,6,.28)}
+    html[data-theme="light"] .claim-flagged{background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(139,92,246,.05));border-color:rgba(225,29,72,.22)}
+    html[data-theme="light"] .claim-flagged .claim-tag{color:#e11d48;background:rgba(244,63,94,.1);border-color:rgba(225,29,72,.22)}
+    html[data-theme="light"] .claim-flagged .claim-eula a{color:#e11d48}
     html[data-theme="light"] .search-bar{background:#fff;box-shadow:0 18px 44px -30px rgba(8,34,18,.45)}
     html[data-theme="light"] .search-bar:focus-within{box-shadow:0 0 0 4px rgba(21,163,74,.12),0 18px 44px -30px rgba(8,34,18,.45)}
     html[data-theme="light"] .nm-skin-body{
@@ -1059,7 +1061,7 @@
         <strong class="claim-title">This account is flagged</strong>
         <p>This profile is flagged because it has been involved in account selling, or it was recently compromised.</p>
         <p>Treat any trade, purchase, or transfer involving this account with extreme caution. Profiles in this situation can be suspended or banned from multiplayer, and may be reported to Mojang for Minecraft EULA violations.</p>
-        <p class="claim-eula">We enforce the Minecraft EULA strictly. If you believe this flag is a mistake, contact <a href="mailto:support@mcsearch.io">support@mcsearch.io</a> — do not ignore this notice.</p>
+        <p class="claim-eula">We enforce the Minecraft EULA strictly. If you believe this flag is a mistake, contact support — <a href="https://discord.gg/mcsearch" target="_blank" rel="noopener">click here</a> — do not ignore this notice.</p>
       </div>
       <div class="profile-header">
         <h1 class="profile-name" id="pNameBig">—</h1>
