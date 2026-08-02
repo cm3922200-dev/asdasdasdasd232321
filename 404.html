@@ -2242,6 +2242,13 @@
     return TRENDING.some(function (t) { return t.name.toLowerCase() === key; });
   }
 
+  /* Trending cards look "owned", except names we leave open to claim. */
+  function isTrendingClaimed(name) {
+    var key = String(name || '').toLowerCase();
+    if (key === 'technoblade') return false;
+    return isTrendingName(name);
+  }
+
   function applyProfileStatus(suspended, claimed) {
     var el = $('pStatus');
     var claimedEl = $('profileClaimed');
@@ -2266,7 +2273,7 @@
     if ($('claimName') && profile && profile.name) {
       $('claimName').textContent = profile.name;
     }
-    var trending = !!(profile && isTrendingName(profile.name));
+    var trending = !!(profile && isTrendingClaimed(profile.name));
     return loadSuspendedList().then(function (list) {
       var suspended = profileIsSuspended(profile, list);
       var claimed = suspended || trending;
