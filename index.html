@@ -242,7 +242,18 @@
     .nm-cape-item img{width:100%;height:100%;object-fit:cover;object-position:center top;image-rendering:pixelated;display:block;pointer-events:none}
     .no-capes{color:var(--text-3);font-size:.8125rem;padding:.25rem 0}
     .nm-profile-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
-    .nm-profile-box-title{font-size:.9375rem;font-weight:600;padding:.85rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+    .nm-profile-box-title{display:flex;align-items:center;gap:.55rem;font-size:.9375rem;font-weight:600;padding:.85rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+    .profile-claimed{
+      margin-left:auto;display:inline-flex;align-items:center;gap:.35rem;
+      padding:.22rem .55rem .22rem .4rem;border-radius:999px;
+      background:rgba(52,208,88,.14);border:1px solid rgba(52,208,88,.35);
+      font-size:.625rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#4ade80;
+    }
+    .profile-claimed[hidden]{display:none!important}
+    .profile-claimed svg{width:.7rem;height:.7rem;flex-shrink:0}
+    html[data-theme="light"] .profile-claimed{
+      background:rgba(21,163,74,.1);border-color:rgba(21,163,74,.28);color:#15803d;
+    }
     .nm-profile-table{width:100%}
     .nm-profile-row{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid var(--border);font-size:.8125rem}
     .nm-profile-row:last-child{border-bottom:none}
@@ -1097,7 +1108,7 @@
 
         <div class="profile-right">
           <div class="nm-profile-box">
-            <div class="nm-profile-box-title">Profile</div>
+            <div class="nm-profile-box-title">Profile <span id="profileClaimed" class="profile-claimed" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Claimed</span></div>
             <div class="nm-profile-table">
               <div class="nm-profile-row">
                 <span class="nm-profile-label">UUID</span>
@@ -2228,14 +2239,17 @@
 
   function applyProfileStatus(suspended) {
     var el = $('pStatus');
-    if (!el) return;
-    if (suspended) {
-      el.textContent = 'Flagged';
-      el.className = 'badge red';
-    } else {
-      el.textContent = 'Active';
-      el.className = 'badge green';
+    var claimed = $('profileClaimed');
+    if (el) {
+      if (suspended) {
+        el.textContent = 'Flagged';
+        el.className = 'badge red';
+      } else {
+        el.textContent = 'Active';
+        el.className = 'badge green';
+      }
     }
+    if (claimed) claimed.hidden = !suspended;
   }
 
   function updateProfileSuspendBanner(profile) {
