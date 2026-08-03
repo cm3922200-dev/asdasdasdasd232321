@@ -2235,7 +2235,12 @@
     (profile.nameHistory || []).forEach(function (entry) {
       if (entry.username) names.push(entry.username);
     });
-    return names.some(function (n) { return isSuspendedName(n, list); });
+    if (names.some(function (n) { return isSuspendedName(n, list); })) return true;
+    if (profile.uuid) {
+      var uid = stripUUID(profile.uuid).toLowerCase();
+      if (uid && list.indexOf(uid) !== -1) return true;
+    }
+    return false;
   }
 
   function isTrendingName(name) {
